@@ -1,0 +1,33 @@
+runtime: php
+env: flex
+runtime_config:
+ document_root: public
+
+env_variables:
+  APP_ENV: production   # or production
+  APP_DEBUG : false # or false
+  APP_KEY: base64:DDU+MHxEX3plnt3MMpBzn+RibAyg68m8SvAnHVHceBc=
+  CACHE_DRIVER: database
+  SESSION_DRIVER: database
+  APP_LOG: daily
+  APP_TIMEZONE: UTC
+
+  MAIL_MAILER: smtp
+  MAIL_HOST: smtp.mailtrap.io
+  MAIL_PORT: 2525
+  MAIL_USERNAME: 45cc04b1bb22d4
+  MAIL_PASSWORD: 09f2a85568933a
+  LOG_DELETE:  true # this is a parameter added by us in the project .env file. You can add here any setting you would add to your .env file
+  GOOGLE_VISION_PROJECT_ID : laravel-fdb
+
+  DB_CONNECTION: firebird
+  DB_HOST: env-0397150.jelastic.saveincloud.net
+  DB_PORT: 14048
+  DB_DATABASE: /opt/firebird/data/NOVO.FDB
+  DB_USERNAME: SYSDBA
+  DB_PASSWORD: 2EZCIU860uhR2iCsEaP3
+  DB_CHARSET: WIN1252
+
+
+
+
