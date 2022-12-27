@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "php": "^7.4.29",
+        "php": "7.4.*",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "google/cloud": "^0.195.0",
