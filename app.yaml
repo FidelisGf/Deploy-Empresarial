@@ -4,9 +4,9 @@ runtime_config:
  document_root: public
 
 env_variables:
-  APP_ENV: production   # or production
-  APP_DEBUG : false # or false
-  APP_KEY: base64:DDU+MHxEX3plnt3MMpBzn+RibAyg68m8SvAnHVHceBc=
+  APP_ENV: local  # or production
+  APP_DEBUG : true # or false
+  APP_KEY: base64:23y/U6Gw1MaM5WQFcCFB1jpC9RJn9+WFyhUuH0oNz48=
   CACHE_DRIVER: database
   SESSION_DRIVER: database
   APP_LOG: daily

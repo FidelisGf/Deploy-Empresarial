@@ -38,6 +38,9 @@ class EstoqueController extends Controller
     public function getQuantidadeProduct($id, EstoqueRepository $estoqueRepository){
         return $estoqueRepository->getQuantidadeProduct($id);
     }
+    public function test(){
+        return response()->json(['aaaaa']);
+    }
     /**
      * Display the specified resource.
      *

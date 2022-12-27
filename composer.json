@@ -27,7 +27,7 @@
         }
     ],
     "require": {
-        "php": "7.4.*",
+        "php": "^7.3.0",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "google/cloud": "^0.195.0",
@@ -36,6 +36,7 @@
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.4",
+        "league/flysystem-aws-s3-v3": "~1.0",
         "predis/predis": "^2.0",
         "spatie/laravel-query-builder": "^4.0",
         "tymon/jwt-auth": "^1.0"

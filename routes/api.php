@@ -6,6 +6,7 @@ use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\Config_GeneralController;
 use App\Http\Controllers\ConfigFolhaController;
 use App\Http\Controllers\DespesaController;
+use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\EmpresaController;
 use App\Http\Controllers\EstoqueController;
 use App\Http\Controllers\MateriaisController;
@@ -35,23 +36,16 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::group([
-    'middleware' => 'api',
-    'prefix' => 'auth'
-], function ($router) {
-    Route::get('/showAvalibleRoles', [UsuarioController::class, 'showAvalibleRoles']);
-    Route::get('/logout', [AuthController::class, 'logout']);
-    Route::post('sendMailResetPassword', [ResetPwController::class, 'sendResetPwEmail']);
-    Route::post('resetPassword', [ResetPwController::class, 'resetPassword']);
-    Route::post('login', [AuthController::class, 'login']);
-    Route::post('register', [AuthController::class, 'register']);
-    Route::post('profile', [AuthController::class, 'profile']);
-    Route::get('validateTkn', [AuthController::class, 'getAuthenticatedUser']);
-});
+Route::get('/showAvalibleRoles', [UsuarioController::class, 'showAvalibleRoles']);
+Route::get('/logout', [AuthController::class, 'logout']);
+Route::post('sendMailResetPassword', [ResetPwController::class, 'sendResetPwEmail']);
+Route::post('resetPassword', [ResetPwController::class, 'resetPassword']);
+Route::post('login', [AuthController::class, 'login']);
+Route::post('register', [AuthController::class, 'register']);
+Route::post('profile', [AuthController::class, 'profile']);
+Route::get('auth/validateTkn', [AuthController::class, 'getAuthenticatedUser']);
 
 Route::group(['middleware' => ['jwt.verify']], function() {
-
-    //Ações que o funcionário comum pode realizar no sistema
 
     Route::get('refresh', [AuthController::class, 'refresh']);
     Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);
@@ -71,7 +65,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::put('adicionaQuantidadeMaterial/{id}', [MateriaisController::class, 'adicionaQuantidadeMaterial']);
     Route::get('getVendasByDate', [VendaRepository::class, 'getVendasByTipoPagamento']);
 
-    //Ações que Admin's e gerentes podem executar no sistema
+
 
     Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])->middleware(FuncMiddleware::class);
     Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])->middleware(FuncMiddleware::class);
@@ -100,7 +94,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])->middleware(FuncMiddleware::class);
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
-    //Resources
+
 
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');
@@ -118,7 +112,3 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::resource('usuarios', 'UsuarioController')->except(['show'])->middleware(FuncMiddleware::class);
     Route::resource('penalidades', 'PenalidadeController')->middleware(FuncMiddleware::class);
 });
-
-
-
-
