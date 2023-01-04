@@ -48,12 +48,13 @@ Route::get('auth/validateTkn', [AuthController::class, 'getAuthenticatedUser']);
 Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::get('refresh', [AuthController::class, 'refresh']);
-    Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);
+
     Route::get('/findCategoryWithProductsIn', [CategoryController::class, 'findCategoryWithProductsIn']);
 
     Route::get('pedidoPorData', [PedidosController::class, 'pedidosPorPeriodo']);
     Route::get('countProducts', [ProductController::class, 'countProducts']);
     Route::post('/search', [ProductController::class, 'search']);
+    Route::post('/products/search', [ProductController::class, 'search']);
     Route::get('/allByCategory/{id}', [ProductController::class, 'findAllProductByCategory']);
     Route::get('/checaEmpUser', [UsuarioController::class, 'checkIfUserHasEmpresa'] );
     Route::get('/getEmpresaFromUser', [EmpresaController::class, 'getEmpresaFromUser']);
@@ -104,11 +105,14 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::resource('cores', 'CorController');
     Route::resource('vendas', 'VendaController')->middleware(FuncMiddleware::class);
     Route::resource('pagamentos', 'Pagamento_SalarioController')->middleware(FuncMiddleware::class);
-    Route::resource('products', 'ProductController')->except(['destroy']);
+
     Route::resource('pedidos', 'PedidosController')->except(['show', 'update']);
     Route::resource('empresas', 'EmpresaController');
-    Route::resource('categorys', 'CategoryController');
+
     Route::resource('estoques', 'EstoqueController');
     Route::resource('usuarios', 'UsuarioController')->except(['show'])->middleware(FuncMiddleware::class);
     Route::resource('penalidades', 'PenalidadeController')->middleware(FuncMiddleware::class);
 });
+Route::resource('categorys', 'CategoryController');
+Route::resource('products', 'ProductController')->except(['destroy']);
+Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);

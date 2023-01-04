@@ -7,6 +7,7 @@ use App\Events\MakeLog;
 use App\Http\interfaces\CategoryInterface;
 use App\Http\Requests\StoreCategoryValidator;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class CategoryRepository implements CategoryInterface //Precisa de refatoração
 {
@@ -15,12 +16,21 @@ class CategoryRepository implements CategoryInterface //Precisa de refatoração
     {
         $this->model = $model;
     }
-    public function index()
+    public function index(Request $request)
     {
         try{
-            $user = auth()->user();
-            $empresa = $user->empresa;
-            $Category = Category::where('ID_EMPRESA', $empresa->ID)->get();
+            if($request->filled('Shop')){
+                $ID = DB::table('INTERNET')
+                ->select('INTERNET.ID_EMPRESA')
+                ->where('INTERNET.STATUS', '=', 1)
+                ->first();
+                $ID = $ID->ID_EMPRESA;
+            }else{
+                $user = auth()->user();
+                $empresa = $user->empresa;
+                $ID = $empresa->ID;
+            }
+            $Category = Category::where('ID_EMPRESA', '=',  $ID)->get();
             return $Category;
         }catch(\Exception $e){
             return response()->json(

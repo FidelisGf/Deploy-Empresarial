@@ -7,6 +7,7 @@ use App\Usuario;
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use Tymon\JWTAuth\Exceptions\TokenExpiredException;
@@ -29,7 +30,6 @@ class AuthController extends Controller
         try{
             $validator = $request->validated();
             if($validator){
-                $user = auth()->user();
                 $user = Usuario::create(array_merge(
                     $request->all(),
                     ['PASSWORD' => bcrypt($request->PASSWORD)]// 'criptografa' a senha antes de inserir no banco
@@ -42,6 +42,19 @@ class AuthController extends Controller
                         $user->SALARIO = $request->SALARIO;
                         $user->save();
                     }
+                }else{
+                    $image = base64_encode(file_get_contents($request->file('IMAGE')->path()));
+                    $user->IMAGE = $image;
+                    $user->SALARIO = floatval(0);
+                    $ID = DB::table('INTERNET')
+                    ->select('INTERNET.ID_EMPRESA')
+                    ->where('INTERNET.STATUS', '=', 1)
+                    ->first();
+                    $ID = $ID->ID_EMPRESA;
+                    $user->EMPRESA_ID = $ID;
+                    $user->ID_ROLE = 4;
+                    $user->CPF = $request->CPF;
+                    $user->save();
                 }
                 return response()->json(["message" =>
                 'Usuario registrado com sucesso !',"Usuario" => $user], 201);

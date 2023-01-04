@@ -16,9 +16,9 @@ class CategoryController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function index(CategoryRepository $categoryRepository)
+    public function index(CategoryRepository $categoryRepository, Request $request)
     {
-      return $categoryRepository->index();
+      return $categoryRepository->index($request);
     }
 
 

@@ -36,23 +36,7 @@ class ProductRepository implements InterfacesProductInterface
                         break;
                 }
             }else{
-                $user = auth()->user();
-                $empresa = $user->empresa;
-                if($request->filled('search')){
-                    return $this->search($request);
-                }else{
-                    $PRODUCTS = DB::table('EMPRESAS')
-                    ->where('EMPRESAS.ID', $empresa->ID)
-                    ->join('ESTOQUES', 'ESTOQUES.EMPRESA_ID', '=', 'EMPRESAS.ID')->
-                    join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
-                    ->join('CATEGORIAS', 'CATEGORIAS.ID_CATEGORIA', '=', 'PRODUCTS.ID_CATEGORIA')
-                    ->select('CATEGORIAS.ID_CATEGORIA', 'CATEGORIAS.NOME_C',
-                    'PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE')
-                    ->orderBy('ID', 'desc')
-                    ->paginate(20);
-                    return $PRODUCTS;
-                }
-
+                return $this->filterShop($request);
             }
         }catch(\Exception $e){
             return response()->json(
@@ -139,6 +123,77 @@ class ProductRepository implements InterfacesProductInterface
             );
         }
     }
+
+    public function filterShop(Request $request){
+        $flag = true;
+        $search = $request->search;
+        $ID = 0;
+        if($request->filled('Shop')){
+            $ID = DB::table('INTERNET')
+            ->select('INTERNET.ID_EMPRESA')
+            ->where('INTERNET.STATUS', '=', 1)
+            ->first();
+            $ID = $ID->ID_EMPRESA;
+        }else{
+            $user = auth()->user();
+            $empresa = $user->empresa;
+            $ID = $empresa->ID;
+        }
+        $PRODUCTS = DB::table('EMPRESAS')->where('EMPRESAS.ID', $ID)
+        ->join('ESTOQUES', 'ESTOQUES.EMPRESA_ID', '=', 'EMPRESAS.ID')
+        ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
+        ->join('CATEGORIAS', 'CATEGORIAS.ID_CATEGORIA', '=', 'PRODUCTS.ID_CATEGORIA')
+        ->select('CATEGORIAS.ID_CATEGORIA', 'CATEGORIAS.NOME_C',
+        'PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE');
+        if($request->filled('search')){
+            $tmp = Product::where('NOME', $search)->first();
+            if($tmp === null || empty($tmp)){
+                $wordFragments = explode(" ", $search);
+                if(count($wordFragments) != 0){
+                    $PRODUCTS = $PRODUCTS->where('PRODUCTS.NOME', 'LIKE', '%'. $wordFragments[0].'%');
+                    for($i = 1; $i < count($wordFragments); $i++){
+                        $PRODUCTS = $PRODUCTS->orWhere('PRODUCTS.NOME', 'LIKE', '%'. $wordFragments[$i].'%');
+                    }
+                }
+            }else{
+                $PRODUCTS = $PRODUCTS->where('PRODUCTS.NOME', '=', $search);
+            }
+
+        }
+        if($request->filled('Shop')){
+            $PRODUCTS = $PRODUCTS->addselect('PRODUCTS.IMAGE', 'PRODUCTS.DESC');
+        }
+        if($request->filled('Precos')){
+            switch($request->Precos){
+                case 1:
+                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [1, 25]);
+                    break;
+                case 2:
+                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(25), floatval(50)]);
+                    break;
+                case 3:
+                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(50), floatval(100)]);
+                    break;
+                case 4:
+                    $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(100), floatval(1000000000000)]);
+                    break;
+                case 0:
+                    break;
+            }
+        }
+        if($request->filled('categoria')){
+            $PRODUCTS = $PRODUCTS->where('CATEGORIAS.ID_CATEGORIA', '=', $request->categoria);
+        }
+        $PRODUCTS = $PRODUCTS->orderBy('ID', 'desc')
+        ->paginate(20);
+        if($request->filled('Shop')){
+            foreach($PRODUCTS as $p){
+                $p->IMAGE = "data:image/png;base64,$p->IMAGE";
+            }
+        }
+        return $PRODUCTS;
+    }
+
     public function findAllProductByCategory($id){
         try{
             $user = auth()->user();
@@ -164,9 +219,6 @@ class ProductRepository implements InterfacesProductInterface
     }
     public function show($id){
         try{
-            $user = auth()->user();
-            $empresa = $user->empresa;
-
             $PRODUCTS = Product::where('ID', $id)
             ->with(['category' => function($query){
                 $query->select('ID_CATEGORIA', 'NOME_C');
@@ -185,6 +237,7 @@ class ProductRepository implements InterfacesProductInterface
                 $matItem->VALOR = $valor;
                 $materias->push($matItem);
             }
+            $PRODUCTS->ESTOQUE = Estoque::where('PRODUCT_ID', $PRODUCTS->ID)->first();
             $coresEscolhidas = DB::table('CORES_PRODUTOS')
             ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $PRODUCTS->ID)
             ->get();
@@ -194,6 +247,7 @@ class ProductRepository implements InterfacesProductInterface
 
                 $cores->push($c);
             }
+            $PRODUCTS->IMAGE = "data:image/png;base64,$PRODUCTS->IMAGE";
             $PRODUCTS->CORES = $cores;
             $PRODUCTS->MATERIAS = $materias;
             return response()->json($PRODUCTS);
@@ -342,6 +396,12 @@ class ProductRepository implements InterfacesProductInterface
             if($result === null || empty($result)){
                 $result = Product::where('NOME', 'LIKE', '%'. $search.'%')->paginate(20);
             }
+            if($request->filled('Shop')){
+                foreach($result as $p){
+                    $p->IMAGE = "data:image/png;base64,$p->IMAGE";
+                }
+            }
+
             return $result;
 
         }catch(\Exception $e){

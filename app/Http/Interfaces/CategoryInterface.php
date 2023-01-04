@@ -5,7 +5,7 @@ use App\Http\Requests\StoreCategoryValidator;
 use Illuminate\Http\Request;
 
 interface CategoryInterface{
-    public function index();
+    public function index(Request $request);
     public function store(StoreCategoryValidator $request);
     public function findCategoryWithProductsIn();
     public function show($id);
