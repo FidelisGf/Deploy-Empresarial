@@ -161,7 +161,7 @@ class ProductRepository implements InterfacesProductInterface
 
         }
         if($request->filled('Shop')){
-            $PRODUCTS = $PRODUCTS->addselect('PRODUCTS.IMAGE', 'PRODUCTS.DESC');
+            $PRODUCTS = $PRODUCTS->addselect('PRODUCTS.IMAGE', 'PRODUCTS.DESC')->where('ESTOQUES.QUANTIDADE', '>', 0);
         }
         if($request->filled('Precos')){
             switch($request->Precos){
@@ -421,7 +421,7 @@ class ProductRepository implements InterfacesProductInterface
                 $matItem = Materiais::FindOrFail($matItem->ID_MATERIA);
                 $matItem->QUANTIDADE = $qntd;
                 $matItem->QUANTIDADE -= ($matItem->QUANTIDADE * $quantidade);
-                if($matItem->QUANTIDADE < 0){
+                if($matItem->QUANTIDADE == 0){
                     return false;
                 }else{
                     $matItem->save();

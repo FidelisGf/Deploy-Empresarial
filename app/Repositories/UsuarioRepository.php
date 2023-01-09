@@ -97,6 +97,16 @@ class UsuarioRepository implements UsuarioInterface
             return response()->json(['message' => $e->getMessage()],400);
         }
     }
+
+    public function getPerfilUserInternet(){
+            try{
+                $user = auth()->user();
+                $user->IMAGE = "data:image/png;base64,$user->IMAGE";
+                return $user;
+            }catch(\Exception $e){
+                return response()->json(['message' => $e->getMessage()]);
+            }
+    }
     public function getActiveUsers(){
         try{
             $empresa = auth()->user()->empresa->ID;
@@ -182,6 +192,7 @@ class UsuarioRepository implements UsuarioInterface
             //$monthFinal = Carbon::parse($monthFinal);
             $valorTotalVendas = 0;
             $usuario = Usuario::FindOrFail($id);
+
 
             $cargo = $usuario->role;
 

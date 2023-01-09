@@ -77,4 +77,7 @@ class UsuarioController extends Controller
     public function getUserMediaVendasByAno($id, UsuarioRepository $usuarioRepository){
         return $usuarioRepository->getUserMediaVendasByAno($id);
     }
+    public function getPerfilUserInternet(UsuarioRepository $usuarioRepository){
+        return $usuarioRepository->getPerfilUserInternet();
+    }
 }

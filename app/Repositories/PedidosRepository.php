@@ -26,6 +26,8 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
 
+use function Deployer\select;
+
 class PedidosRepository implements PedidoInterface
 {
     private $model;
@@ -51,7 +53,10 @@ class PedidosRepository implements PedidoInterface
         if($pedido->APROVADO == 'T'){
             $pedido->DT_PAGAMENTO = now()->format('Y-m-d H:i');
         }
-        $pedido->ID_USER = $user->ID;
+        if($id == 0){
+            $pedido->ID_USER = $user->ID;
+        }
+
         return $pedido;
 
 
@@ -68,9 +73,33 @@ class PedidosRepository implements PedidoInterface
             }else{
                 $user = auth()->user();
                 $empresa = $user->empresa;
+                $Pedidos = null;
+                if($request->filled('Shop')){
+                    $Pedidos = DB::table('PEDIDOS')
+                    ->where('PEDIDOS.ID_USER','=', $user->ID)
+                    ->selectRaw('PEDIDOS.ID, PEDIDOS.VALOR_TOTAL, PEDIDOS.METODO_PAGAMENTO,
+                    PEDIDOS.CREATED_AT, PEDIDOS.APROVADO')
+                    ->paginate(20);
 
-                $Pedidos = Pedidos::where('ID_EMPRESA', $empresa->ID)
-                ->paginate(6);
+                    foreach($Pedidos as $p){
+                        $PRODUCTS = collect(new Product());
+                        $produtos = Pedido_Itens::where('ID_PEDIDO', '=', $p->ID)
+                        ->get();
+                        $p->CREATED_AT = Carbon::parse($p->CREATED_AT)
+                        ->format('d/m/Y H:i');
+                        foreach($produtos as $prod){
+                            $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
+                            $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
+                            $PRODUCTS->push($prod);
+                        }
+                        $p->PRODUTOS = $PRODUCTS;
+                    }
+
+                }else{
+                    $Pedidos = Pedidos::where('ID_EMPRESA', $empresa->ID)
+                    ->paginate(20);
+                }
+
 
                 return $Pedidos;
             }
@@ -149,6 +178,7 @@ class PedidosRepository implements PedidoInterface
                 ->with(['medida' => function($query){
                     $query->select('ID', 'NOME');
                 }])->firstOrFail();
+                $p->makeHidden(['IMAGE']);
                 $p->MEDIDA = $p->medida->NOME;
                 $p->QUANTIDADE = $qntd;
                 $p->VALOR = $valor;
@@ -203,8 +233,7 @@ class PedidosRepository implements PedidoInterface
                         $query->QUANTIDADE = $FakeProduct->QUANTIDADE;
                         $query->save();
                         if($query->QUANTIDADE <  $FakeProduct->QUANTIDADE){
-
-                            $FakeProduct->QUANTIDADE = intval($query->QUANTIDADE - $FakeProduct->QUANTIDADE);
+                            //$FakeProduct->QUANTIDADE = intval($query->QUANTIDADE - $FakeProduct->QUANTIDADE);
 
                         }else if($query->QUANTIDADE > $FakeProduct->QUANTIDADE){
 
@@ -272,6 +301,37 @@ class PedidosRepository implements PedidoInterface
             }
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);
+        }
+    }
+
+    public function storeInternetPedidos(Request $request){
+        try{
+            $vlTotal = 0;
+            $estoque = new EstoqueRepository();
+            $ItensPedido = collect(new Pedido_Itens());
+            $pedido = $this->pedido_factory($request, 0);
+            $request->PRODUTOS = json_decode($request->PRODUTOS);
+            foreach($request->PRODUTOS as $p){
+                $produto = (object) $p;
+                $itens = new Pedido_Itens();
+                $itens->ID_PRODUTO = $produto->ID;
+                $itens->QUANTIDADE = $produto->QUANTIDADE;
+                $itens->VALOR = floatval($produto->VALOR);
+                $ItensPedido->push($itens);
+                $vlTotal += $produto->VALOR * $produto->QUANTIDADE;
+                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE);
+            }
+            $pedido->INTERNET = 'T';
+            $pedido->VALOR_TOTAL = $vlTotal;
+            $pedido->save();
+            foreach($ItensPedido as $item){
+                $item->ID_PEDIDO = $pedido->ID;
+                $item->save();
+            }
+            return response()->json(['message' => 'Seu pedido foi registrado com sucesso !'
+            ,'data' => $pedido->ID]);
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
         }
     }
 

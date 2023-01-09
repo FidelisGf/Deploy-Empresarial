@@ -86,4 +86,8 @@ class PedidosController extends Controller
             return response()->json(["message" => "Usuario nao autorizado !"],400);
         }
     }
+
+    public function storeInternetPedidos(Request $request, PedidosRepository $pedidosRepository){
+        return $pedidosRepository->storeInternetPedidos($request);
+    }
 }

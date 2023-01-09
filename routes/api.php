@@ -96,6 +96,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
 
+    Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
+    Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
 
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');
