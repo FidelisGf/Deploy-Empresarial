@@ -81,4 +81,7 @@ class UsuarioController extends Controller
     public function getPerfilUserInternet(UsuarioRepository $usuarioRepository){
         return $usuarioRepository->getPerfilUserInternet();
     }
+    public function checkIfPassword(Request $request, UsuarioRepository $usuarioRepository){
+        return $usuarioRepository->checkIfPassword($request);
+    }
 }

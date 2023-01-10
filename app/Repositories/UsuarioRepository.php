@@ -18,6 +18,7 @@ use Carbon\Carbon;
 use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Validator;
 use PhpParser\Node\Expr\FuncCall;
 use PhpParser\Node\Stmt\UseUse;
@@ -201,6 +202,23 @@ class UsuarioRepository implements UsuarioInterface
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);
         }
+    }
+    public function checkIfPassword(Request $request){
+        try{
+            $Usuario = Usuario::where('ID', $request->ID)
+            ->first();
+
+            if($Usuario){
+                if(Hash::check($request->PASSWORD, $Usuario->PASSWORD )){
+                    return response()->json(true);
+                }else{
+                    return response()->json(false);
+                }
+            }
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()],400);
+        }
+
     }
 
     public function show($id){

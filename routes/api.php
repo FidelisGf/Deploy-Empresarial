@@ -96,6 +96,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
 
+    Route::get('/checkIfPassword', [UsuarioController::class, 'checkIfPassword']);
     Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
     Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
