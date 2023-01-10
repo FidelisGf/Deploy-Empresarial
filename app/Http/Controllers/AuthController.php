@@ -43,8 +43,10 @@ class AuthController extends Controller
                         $user->save();
                     }
                 }else{
-                    $image = base64_encode(file_get_contents($request->file('IMAGE')->path()));
-                    $user->IMAGE = $image;
+                    if($request->filled('IMAGE')){
+                        $image = base64_encode(file_get_contents($request->file('IMAGE')->path()));
+                        $user->IMAGE = $image;
+                    }
                     $user->SALARIO = floatval(0);
                     $ID = DB::table('INTERNET')
                     ->select('INTERNET.ID_EMPRESA')

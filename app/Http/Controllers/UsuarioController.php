@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Requests\RegisterAuthValidator;
 use App\Http\Requests\RegisterEmployeeValidator;
 use App\Http\Requests\StoreEmpresaValidator;
 use App\Repositories\UsuarioRepository;
@@ -25,8 +26,8 @@ class UsuarioController extends Controller
     public function show($id, UsuarioRepository $usuarioRepository){
         return $usuarioRepository->show($id);
     }
-    public function update(RegisterEmployeeValidator $request, $id, UsuarioRepository $usuarioRepository){
-        return $usuarioRepository->update($id, $request);
+    public function updateUser(Request $request, UsuarioRepository $usuarioRepository){
+        return $usuarioRepository->updateUser($request);
     }
     public function create()
     {

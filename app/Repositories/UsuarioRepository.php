@@ -6,9 +6,11 @@ use App\Config_General;
 use App\Empresa;
 use App\Historico_Penalidade;
 use App\Http\interfaces\UsuarioInterface;
+use App\Http\Requests\RegisterAuthValidator;
 use App\Http\Requests\RegisterEmployeeValidator;
 use App\Http\Requests\StoreEmpresaValidator;
 use App\Pagamento_Salario;
+use App\Pedidos;
 use App\Penalidade;
 use App\Role;
 use App\Usuario;
@@ -101,7 +103,13 @@ class UsuarioRepository implements UsuarioInterface
     public function getPerfilUserInternet(){
             try{
                 $user = auth()->user();
+                $user->BLOB = $user->IMAGE;
                 $user->IMAGE = "data:image/png;base64,$user->IMAGE";
+
+                $pRealizados = Pedidos::where('ID_USER', $user->ID)->count();
+                $pPagos = Pedidos::where('ID_USER', $user->ID)->where('DT_PAGAMENTO', '!=', null)->count();
+                $user->pPagos = $pPagos;
+                $user->pRealizados = $pRealizados;
                 return $user;
             }catch(\Exception $e){
                 return response()->json(['message' => $e->getMessage()]);
@@ -171,13 +179,24 @@ class UsuarioRepository implements UsuarioInterface
             return response()->json(['message' => $e->getMessage()]);
         }
     }
-    public function update($id, RegisterEmployeeValidator $request){
+    public function updateUser(Request $request){
+
         try{
-            $validator = $request->validated();
-            if($validator){
-                $user = Usuario::FindOrFail($id);
-                $user->update($request->all());
+
+            $user = Usuario::FindOrFail($request->ID);
+            if($request->has('IMAGE')){
+
+                $image = base64_encode(file_get_contents($request->file('IMAGE')->path()));
+                $user->IMAGE = $image;
             }
+            $user->NAME = $request->NAME;
+            $user->CPF = $request->CPF;
+            $user->EMAIL = $request->EMAIL;
+            $user->SALARIO = $request->SALARIO;
+                // if(!$request->filled('Shop')){
+                //     $user->ID_ROLE = $request->ID_ROLE;
+                // }
+            $user->save();
             return response()->json(['message' => 'Usuario Editado com sucesso !']);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);

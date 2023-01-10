@@ -88,8 +88,10 @@ class PedidosRepository implements PedidoInterface
                         $p->CREATED_AT = Carbon::parse($p->CREATED_AT)
                         ->format('d/m/Y H:i');
                         foreach($produtos as $prod){
+                            $tmp = $prod->QUANTIDADE;
                             $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
                             $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
+                            $prod->QUANTIDADE = $tmp;
                             $PRODUCTS->push($prod);
                         }
                         $p->PRODUTOS = $PRODUCTS;

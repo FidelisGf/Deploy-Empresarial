@@ -98,6 +98,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
     Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
+    Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
 
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');
@@ -107,12 +108,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::resource('cores', 'CorController');
     Route::resource('vendas', 'VendaController')->middleware(FuncMiddleware::class);
     Route::resource('pagamentos', 'Pagamento_SalarioController')->middleware(FuncMiddleware::class);
-
     Route::resource('pedidos', 'PedidosController')->except(['show', 'update']);
     Route::resource('empresas', 'EmpresaController');
-
     Route::resource('estoques', 'EstoqueController');
-    Route::resource('usuarios', 'UsuarioController')->except(['show'])->middleware(FuncMiddleware::class);
+    Route::resource('usuarios', 'UsuarioController')->except(['show', 'update']);
     Route::resource('penalidades', 'PenalidadeController')->middleware(FuncMiddleware::class);
 });
 Route::resource('categorys', 'CategoryController');

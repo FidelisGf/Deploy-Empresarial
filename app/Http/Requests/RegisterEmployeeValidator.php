@@ -23,11 +23,11 @@ class RegisterEmployeeValidator extends FormRequest
     public function rules()
     {
         return [
-            'NAME' => 'required|max:50|min:4',
-            'CPF' => 'required',
-            'EMAIL'=> 'required|max:60|min:8|email',
-            'ID_ROLE' => 'required',
-            'SALARIO' => 'required',
+            'NAME' => 'required|max:50|min:4|sometimes',
+            'CPF' => 'required|sometimes',
+            'EMAIL'=> 'required|max:60|min:8|email|sometimes',
+            'ID_ROLE' => 'sometimes',
+            'SALARIO' => 'sometimes',
         ];
     }
     public function messages()

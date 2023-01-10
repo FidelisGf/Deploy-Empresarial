@@ -25,7 +25,7 @@ class RegisterAuthValidator extends FormRequest
     {
         return [
             'NAME' => 'required|max:50|min:4',
-            'PASSWORD' => 'required|max:50|min:6',
+            'PASSWORD' => 'required|max:50|min:6|sometimes',
             'EMAIL'=> 'required|max:60|min:8|email',
             'ID_ROLE' => 'sometimes'
         ];
