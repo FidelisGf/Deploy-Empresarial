@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Avaliacao;
 use App\Cliente;
 use App\Config_General;
 use App\Estoque;
@@ -90,6 +91,13 @@ class PedidosRepository implements PedidoInterface
                         foreach($produtos as $prod){
                             $tmp = $prod->QUANTIDADE;
                             $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
+                            $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
+                            ->where('ID_USER', '=', $user->ID)->first();
+                            if($avaliacao == null || empty($avaliacao)){
+                                $prod->AVALIACAO = 0;
+                            }else{
+                                $prod->AVALIACAO = floatval($avaliacao->NOTA);
+                            }
                             $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
                             $prod->QUANTIDADE = $tmp;
                             $PRODUCTS->push($prod);

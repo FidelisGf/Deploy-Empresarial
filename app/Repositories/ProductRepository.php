@@ -2,6 +2,7 @@
 
 namespace App\Repositories;
 
+use App\Avaliacao;
 use App\Cor;
 use App\Cor_Produtos;
 use App\Empresa;
@@ -250,6 +251,14 @@ class ProductRepository implements InterfacesProductInterface
             $PRODUCTS->IMAGE = "data:image/png;base64,$PRODUCTS->IMAGE";
             $PRODUCTS->CORES = $cores;
             $PRODUCTS->MATERIAS = $materias;
+            $avaliacoes = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)->sum('NOTA');
+            $countAva = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)->count();
+            $media = 0;
+            if($countAva > 0){
+                $media = floatval($avaliacoes / $countAva);
+            }
+
+            $PRODUCTS->AVALIACAO = $media;
             return response()->json($PRODUCTS);
         }catch(\Exception $e){
             return response()->json(
