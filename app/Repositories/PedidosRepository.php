@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Avaliacao;
 use App\Cliente;
 use App\Config_General;
+use App\Cupom;
 use App\Estoque;
 use App\Events\MakeLog;
 use App\Events\VendaGerada;
@@ -79,16 +80,26 @@ class PedidosRepository implements PedidoInterface
                     $Pedidos = DB::table('PEDIDOS')
                     ->where('PEDIDOS.ID_USER','=', $user->ID)
                     ->selectRaw('PEDIDOS.ID, PEDIDOS.VALOR_TOTAL, PEDIDOS.METODO_PAGAMENTO,
-                    PEDIDOS.CREATED_AT, PEDIDOS.APROVADO')
+                    PEDIDOS.CREATED_AT, PEDIDOS.APROVADO, PEDIDOS.ID_CUPOM')
                     ->paginate(20);
 
                     foreach($Pedidos as $p){
+                        $p->VlTemp = null;
+                        if($p->ID_CUPOM != null){
+                            $vlCupom = Cupom::where('ID', '=', $p->ID_CUPOM)
+                            ->first();
+                            $p->DESCONTO = floatval($vlCupom->DESCONTO);
+                        }
                         $PRODUCTS = collect(new Product());
                         $produtos = Pedido_Itens::where('ID_PEDIDO', '=', $p->ID)
                         ->get();
                         $p->CREATED_AT = Carbon::parse($p->CREATED_AT)
                         ->format('d/m/Y H:i');
                         foreach($produtos as $prod){
+                            if($p->ID_CUPOM != null){
+                                $p->VlTemp += $prod->VALOR;
+                            }
+
                             $tmp = $prod->QUANTIDADE;
                             $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
                             $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
@@ -333,11 +344,18 @@ class PedidosRepository implements PedidoInterface
             }
             $pedido->INTERNET = 'T';
             $pedido->VALOR_TOTAL = $vlTotal;
+            if($request->filled('ID_CUPOM')){
+                $pedido->ID_CUPOM = $request->ID_CUPOM;
+                $desconto = Cupom::where('ID', '=', $pedido->ID_CUPOM)->first();
+                $desconto = $desconto->DESCONTO;
+                $pedido->VALOR_TOTAL = $pedido->VALOR_TOTAL - ((floatval($pedido->VALOR_TOTAL) * floatval($desconto)) / 100);
+            }
             $pedido->save();
             foreach($ItensPedido as $item){
                 $item->ID_PEDIDO = $pedido->ID;
                 $item->save();
             }
+
             return response()->json(['message' => 'Seu pedido foi registrado com sucesso !'
             ,'data' => $pedido->ID]);
         }catch(\Exception $e){

@@ -227,8 +227,6 @@ class ProductRepository implements InterfacesProductInterface
             ])->with(['medida' => function($query){
                 $query->select('ID', 'NOME');
             }])->firstOrFail();
-            // $image = base64_decode($PRODUCTS->IMAGE);
-            // $PRODUCTS->IMAGE = $image = file_get_contents($image);
             $materias = collect(new Materiais());
             foreach($PRODUCTS->materias as $matItem){
                 $qntd = $matItem->QUANTIDADE;

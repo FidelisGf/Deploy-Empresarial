@@ -5,6 +5,7 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ClienteController;
 use App\Http\Controllers\Config_GeneralController;
 use App\Http\Controllers\ConfigFolhaController;
+use App\Http\Controllers\CupomController;
 use App\Http\Controllers\DespesaController;
 use App\Http\Controllers\DocumentsController;
 use App\Http\Controllers\EmpresaController;
@@ -65,8 +66,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('findLucroByProduto/{id}', [ProductController::class, 'findLucroByProduto']);
     Route::put('adicionaQuantidadeMaterial/{id}', [MateriaisController::class, 'adicionaQuantidadeMaterial']);
     Route::get('getVendasByDate', [VendaRepository::class, 'getVendasByTipoPagamento']);
-
-
+    Route::get('cupons', [CupomController::class, 'getCupom']);
+    Route::post('cupons', [CupomController::class, 'applyCupom']);
 
     Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])->middleware(FuncMiddleware::class);
     Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])->middleware(FuncMiddleware::class);

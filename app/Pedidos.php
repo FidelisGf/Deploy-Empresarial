@@ -18,7 +18,7 @@ class Pedidos extends Model
     public $timestamps = true;
     protected $fillable = ['ID', 'METODO_PAGAMENTO',
                           'ID_EMPRESA', 'VALOR_TOTAL', 'APROVADO', 'DT_PAGAMENTO',
-                          'ID_CLIENTE', 'ID_USER', 'COMISSAO', 'PG_COMISSAO'];
+                          'ID_CLIENTE', 'ID_USER', 'COMISSAO', 'PG_COMISSAO', 'ID_CUPOM'];
     public function empresas(){
         return $this->belongsTo(Empresa::class, 'ID_EMPRESA', 'ID');
     }
