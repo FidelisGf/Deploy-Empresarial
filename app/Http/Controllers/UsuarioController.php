@@ -26,7 +26,7 @@ class UsuarioController extends Controller
     public function show($id, UsuarioRepository $usuarioRepository){
         return $usuarioRepository->show($id);
     }
-    public function updateUser(Request $request, UsuarioRepository $usuarioRepository){
+    public function updateUser(RegisterEmployeeValidator $request, UsuarioRepository $usuarioRepository){
         return $usuarioRepository->updateUser($request);
     }
     public function create()

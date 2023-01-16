@@ -17,4 +17,5 @@ interface ProductInterface{
     public function search(Request $request);
     public function descontaQuantidadeMaterial($id, $quantidade);
     public function countProducts();
+    public function filterShop(Request $request);
 }

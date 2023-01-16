@@ -1,6 +1,7 @@
 <?php
 namespace App\Http\interfaces;
 
+use App\Http\Requests\RegisterEmployeeValidator;
 use App\Http\Requests\StoreEmpresaValidator;
 use Illuminate\Http\Request;
 
@@ -21,5 +22,9 @@ interface UsuarioInterface{
     public function getFolhaSalarioUsers(Request $request);
     public function makeWagePayment(Request $request);
     public function checkIfWageWasPayed(Request $request);
+    public function showRolesAvaibles();
+    public function getPerfilUserInternet();
+    public function updateUser(RegisterEmployeeValidator $request);
+    public function checkIfPassword(Request $request);
 
 }

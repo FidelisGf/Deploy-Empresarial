@@ -180,7 +180,7 @@ class UsuarioRepository implements UsuarioInterface
             return response()->json(['message' => $e->getMessage()]);
         }
     }
-    public function updateUser(Request $request){
+    public function updateUser(RegisterEmployeeValidator $request){
 
         try{
 
