@@ -145,7 +145,8 @@ class ProductRepository implements InterfacesProductInterface
         ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
         ->join('CATEGORIAS', 'CATEGORIAS.ID_CATEGORIA', '=', 'PRODUCTS.ID_CATEGORIA')
         ->select('CATEGORIAS.ID_CATEGORIA', 'CATEGORIAS.NOME_C',
-        'PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE');
+        'PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE')
+        ->where('ESTOQUES.COR', '=', 'P');
         if($request->filled('search')){
             $tmp = Product::where('NOME', $search)->first();
             if($tmp === null || empty($tmp)){
@@ -236,16 +237,20 @@ class ProductRepository implements InterfacesProductInterface
                 $matItem->VALOR = $valor;
                 $materias->push($matItem);
             }
-            $PRODUCTS->ESTOQUE = Estoque::where('PRODUCT_ID', $PRODUCTS->ID)->first();
+            $PRODUCTS->ESTOQUE = Estoque::where('PRODUCT_ID', $PRODUCTS->ID)
+            ->where('COR','=','P')->first();
             $coresEscolhidas = DB::table('CORES_PRODUTOS')
             ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $PRODUCTS->ID)
             ->get();
             $cores = collect(new Cor());
             foreach($coresEscolhidas as $c){
                 $c = Cor::FindOrFail($c->ID_COR);
-
+                $c->ESTOQUE = Estoque::where('PRODUCT_ID', '=', $id)->where('COR', '=', $c->HASH)
+                ->first();
+                $c->ESTOQUE = $c->ESTOQUE->QUANTIDADE;
                 $cores->push($c);
             }
+
             $PRODUCTS->IMAGE = "data:image/png;base64,$PRODUCTS->IMAGE";
             $PRODUCTS->CORES = $cores;
             $PRODUCTS->MATERIAS = $materias;
@@ -282,9 +287,11 @@ class ProductRepository implements InterfacesProductInterface
                 $image = base64_encode(file_get_contents($request->file('IMAGE')->path()));
                 $produto->IMAGE = $image;
                 $produto->save();
+                $estoque = new EstoqueRepository();
                 foreach($cores as $c){
                     $cor = new Cor_Produtos();
                     $cor->ID_COR = $c->ID;
+                    $estoque->storeProdutoInEstoque($produto->ID, $c->QNTD, $c->HASH);
                     $cor->ID_PRODUTO = $produto->ID;
                     $cor->save();
                 }
@@ -305,8 +312,7 @@ class ProductRepository implements InterfacesProductInterface
                 if($produto){
                     $quantidade = $request->quantidade_inicial;
                     $mtController->removeQuantidadeMaterial($materias, $quantidade);
-                    $estoque = new EstoqueRepository();
-                    $estoque->storeProdutoInEstoque($produto->ID, $quantidade);
+                    $estoque->storeProdutoInEstoque($produto->ID, $quantidade, 'P');
                     $helper->commit();
                     return response()->json(
                         $image

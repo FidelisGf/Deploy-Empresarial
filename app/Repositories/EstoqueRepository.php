@@ -99,7 +99,7 @@ class EstoqueRepository implements EstoqueInterface
             return response()->json(['message' => $e],400);
         }
     }
-    public function storeProdutoInEstoque($product_id, $quantidade)
+    public function storeProdutoInEstoque($product_id, $quantidade, $cor)
     {
         try{
             $user = auth()->user();
@@ -108,6 +108,7 @@ class EstoqueRepository implements EstoqueInterface
             $Estoque->PRODUCT_ID = $product_id;
             $Estoque->EMPRESA_ID = $empresa->ID;
             $Estoque->QUANTIDADE = $quantidade;
+            $Estoque->COR = $cor;
             if($Estoque->save()){
                 return response()->json(['message' =>
                 'Produto criado e adicionado ao estoque da empresa'],200);
@@ -147,13 +148,13 @@ class EstoqueRepository implements EstoqueInterface
             ],400);
         }
     }
-    public function removeEstoque($product_id, $quantidade){
+    public function removeEstoque($product_id, $quantidade, $cor){
         try{
             $user = auth()->user();
             $empresa = $user->empresa;
 
             $Estoque = Estoque::where('EMPRESA_ID', '=', $empresa->ID)
-            ->where('PRODUCT_ID', '=', $product_id)
+            ->where('PRODUCT_ID', '=', $product_id)->where('COR', '=', $cor)
             ->first();
 
             $tmp = $Estoque;

@@ -11,7 +11,7 @@ class Pedido_Itens extends Model
     protected $generator = 'GEN_PEDIDOS_ITENS_ID';
     protected $keyType = 'integer';
     public $timestamps = false;
-    protected $fillable = ['ID', 'ID_PRODUTO', 'ID_PEDIDO', 'QUANTIDADE', 'VALOR'];
+    protected $fillable = ['ID', 'ID_PRODUTO', 'ID_PEDIDO', 'QUANTIDADE', 'VALOR', 'COR'];
     public function produtos(){
         return $this->hasMany(Product::class, 'ID', 'ID_PRODUTO');
     }

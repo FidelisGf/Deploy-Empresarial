@@ -11,7 +11,7 @@ class Estoque extends Model
     protected $generator = 'GEN_ESTOQUES_ID';
     protected $keyType = 'integer';
     public $timestamps = false;
-    protected $fillable = ['ID', 'PRODUCT_ID', 'EMPRESA_ID', 'QUANTIDADE', 'SAIDAS'];
+    protected $fillable = ['ID', 'PRODUCT_ID', 'EMPRESA_ID', 'QUANTIDADE', 'SAIDAS', 'COR'];
     public function category(){
         return $this->hasManyThrough(Category::class, Product::class, "ID_CATEGORIA", "PRODUCT_ID", "ID");
     }

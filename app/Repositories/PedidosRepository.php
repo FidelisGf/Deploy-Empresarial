@@ -99,7 +99,7 @@ class PedidosRepository implements PedidoInterface
                             if($p->ID_CUPOM != null){
                                 $p->VlTemp += $prod->VALOR;
                             }
-
+                            $cor_esc = $prod->COR;
                             $tmp = $prod->QUANTIDADE;
                             $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
                             $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
@@ -111,6 +111,7 @@ class PedidosRepository implements PedidoInterface
                             }
                             $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
                             $prod->QUANTIDADE = $tmp;
+                            $prod->COR_ESCOLHIDA = $cor_esc;
                             $PRODUCTS->push($prod);
                         }
                         $p->PRODUTOS = $PRODUCTS;
@@ -143,9 +144,11 @@ class PedidosRepository implements PedidoInterface
                         $itens->ID_PRODUTO = $FakeProduct->ID;
                         $itens->QUANTIDADE = $FakeProduct->QUANTIDADE;
                         $itens->VALOR = $FakeProduct->VALOR;
+                        $itens->COR = $FakeProduct->COR;
                         $ItensPedido->push($itens);
                         $vlTotal += $FakeProduct->VALOR * $FakeProduct->QUANTIDADE;
-                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE);
+                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE, $itens->COR);
+                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE, 'P');
                         $FakeProducts->push($FakeProduct);
                     }
                     $pedido->VALOR_TOTAL = $vlTotal;
@@ -274,7 +277,7 @@ class PedidosRepository implements PedidoInterface
                     }
                     $pedido->VALOR_TOTAL += $FakeProduct->VALOR * $FakeProduct->QUANTIDADE;
                     if(!$flag){
-                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE);
+                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE, 'P');
                     }
                     $FakeProducts->push($FakeProduct);
                     $helper->commit();
@@ -338,9 +341,11 @@ class PedidosRepository implements PedidoInterface
                 $itens->ID_PRODUTO = $produto->ID;
                 $itens->QUANTIDADE = $produto->QUANTIDADE;
                 $itens->VALOR = floatval($produto->VALOR);
+                $itens->COR = $produto->COR;
                 $ItensPedido->push($itens);
                 $vlTotal += $produto->VALOR * $produto->QUANTIDADE;
-                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE);
+                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE, 'P');
+                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE, $itens->COR);
             }
             $pedido->INTERNET = 'T';
             $pedido->VALOR_TOTAL = $vlTotal;
