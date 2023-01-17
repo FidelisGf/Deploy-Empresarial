@@ -12,7 +12,7 @@ interface EstoqueInterface{
     public function storeProdutoInEstoque($product_id, $quantidade, $cor);
     public function addEstoque(StoreEstoqueValidator $request);
     public function removeEstoque($product_id, $quantidade, $cor);
-    public function getQuantidadeProduct($id);
+    public function getQuantidadeProduct($id, Request $request);
     public function filterByProductWithMostSaidas(Request $request);
 
 }

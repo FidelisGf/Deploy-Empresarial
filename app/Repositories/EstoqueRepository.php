@@ -206,10 +206,11 @@ class EstoqueRepository implements EstoqueInterface
             return response()->json(['message' => $e],400);
         }
     }
-    public function getQuantidadeProduct($id){
+    public function getQuantidadeProduct($id, Request $request){
         try{
 
             $estoque = Estoque::where('PRODUCT_ID', $id)
+            ->where('COR', $request->COR)
             ->firstOrFail();
 
             return $estoque->QUANTIDADE;
@@ -217,13 +218,14 @@ class EstoqueRepository implements EstoqueInterface
             return response()->json(['message' => $e->getMessage()],400);
         }
     }
-    public function restauraEstoque($product_id, $quantidade){
+    public function restauraEstoque($product_id, $quantidade, $cor){
         try{
                 $user = auth()->user();
                 $empresa = $user->empresa;
 
                 $Estoque = Estoque::where('EMPRESA_ID', '=', $empresa->ID)
                 ->where('PRODUCT_ID', '=', $product_id)
+                ->where('COR', '=', $cor)
                 ->first();
 
                 $Estoque->QUANTIDADE += $quantidade;

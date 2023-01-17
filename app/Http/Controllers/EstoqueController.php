@@ -23,20 +23,20 @@ class EstoqueController extends Controller
 
     }
 
-    public function storeProdutoInEstoque($product_id, $quantidade, EstoqueRepository $estoqueRepository)
+    public function storeProdutoInEstoque($product_id, $quantidade, $cor, EstoqueRepository $estoqueRepository)
     {
-        return $estoqueRepository->storeProdutoInEstoque($product_id, $quantidade);
+        return $estoqueRepository->storeProdutoInEstoque($product_id, $quantidade, $cor);
     }
 
     public function addEstoque(StoreEstoqueValidator $request, EstoqueRepository $estoqueRepository){
         return $estoqueRepository->addEstoque($request);
     }
-    public function removeEstoque($product_id, $quantidade, EstoqueRepository $estoqueRepository){
-        return $estoqueRepository->removeEstoque($product_id, $quantidade);
+    public function removeEstoque($product_id, $quantidade, $cor, EstoqueRepository $estoqueRepository){
+        return $estoqueRepository->removeEstoque($product_id, $quantidade, $cor);
     }
 
-    public function getQuantidadeProduct($id, EstoqueRepository $estoqueRepository){
-        return $estoqueRepository->getQuantidadeProduct($id);
+    public function getQuantidadeProduct($id, Request $request, EstoqueRepository $estoqueRepository){
+        return $estoqueRepository->getQuantidadeProduct($id, $request);
     }
     public function test(){
         return response()->json(['aaaaa']);
