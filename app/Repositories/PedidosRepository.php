@@ -146,7 +146,6 @@ class PedidosRepository implements PedidoInterface
                         $ItensPedido->push($itens);
                         $vlTotal += $FakeProduct->VALOR * $FakeProduct->QUANTIDADE;
                         $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE, $itens->COR);
-                        $estoque->removeEstoque($FakeProduct->ID, $FakeProduct->QUANTIDADE, 'P');
                         $FakeProducts->push($FakeProduct);
                     }
                     $pedido->VALOR_TOTAL = $vlTotal;
@@ -331,7 +330,6 @@ class PedidosRepository implements PedidoInterface
                 $itens->COR = $produto->COR;
                 $ItensPedido->push($itens);
                 $vlTotal += $produto->VALOR * $produto->QUANTIDADE;
-                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE, 'P');
                 $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE, $itens->COR);
             }
             $pedido->INTERNET = 'T';

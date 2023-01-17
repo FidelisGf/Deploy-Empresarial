@@ -144,9 +144,8 @@ class ProductRepository implements InterfacesProductInterface
         ->join('ESTOQUES', 'ESTOQUES.EMPRESA_ID', '=', 'EMPRESAS.ID')
         ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
         ->join('CATEGORIAS', 'CATEGORIAS.ID_CATEGORIA', '=', 'PRODUCTS.ID_CATEGORIA')
-        ->select('CATEGORIAS.ID_CATEGORIA', 'CATEGORIAS.NOME_C',
-        'PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE')
-        ->where('ESTOQUES.COR', '=', 'P');
+        ->selectRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS.NOME_C, PRODUCTS.ID, PRODUCTS.NOME,
+        PRODUCTS.VALOR, sum(ESTOQUES.QUANTIDADE) as QUANTIDADE');
         if($request->filled('search')){
             $tmp = Product::where('NOME', $search)->first();
             if($tmp === null || empty($tmp)){
@@ -163,7 +162,10 @@ class ProductRepository implements InterfacesProductInterface
 
         }
         if($request->filled('Shop')){
-            $PRODUCTS = $PRODUCTS->addselect('PRODUCTS.IMAGE', 'PRODUCTS.DESC')->where('ESTOQUES.QUANTIDADE', '>', 0);
+            $PRODUCTS = $PRODUCTS->addselect('PRODUCTS.IMAGE', 'PRODUCTS.DESC')
+            ->where('ESTOQUES.QUANTIDADE', '>', 0)
+            ->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
+            .NOME_C, PRODUCTS.ID, PRODUCTS.NOME,PRODUCTS.VALOR,PRODUCTS.DESC,PRODUCTS.IMAGE');
         }
         if($request->filled('Precos')){
             switch($request->Precos){
@@ -186,13 +188,13 @@ class ProductRepository implements InterfacesProductInterface
         if($request->filled('categoria')){
             $PRODUCTS = $PRODUCTS->where('CATEGORIAS.ID_CATEGORIA', '=', $request->categoria);
         }
-        $PRODUCTS = $PRODUCTS->orderBy('ID', 'desc')
-        ->paginate(20);
-        if($request->filled('Shop')){
-            foreach($PRODUCTS as $p){
-                $p->IMAGE = "data:image/png;base64,$p->IMAGE";
-            }
+        if(!$request->filled('Shop')){
+            $PRODUCTS = $PRODUCTS->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
+            .NOME_C, PRODUCTS.ID, PRODUCTS.NOME, PRODUCTS.VALOR');
         }
+
+        $PRODUCTS = $PRODUCTS
+        ->orderBy('ID', 'desc')->paginate(20);
         return $PRODUCTS;
     }
 
@@ -238,7 +240,7 @@ class ProductRepository implements InterfacesProductInterface
                 $materias->push($matItem);
             }
             $PRODUCTS->ESTOQUE = Estoque::where('PRODUCT_ID', $PRODUCTS->ID)
-            ->where('COR','=','P')->first();
+            ->sum('QUANTIDADE');
             $coresEscolhidas = DB::table('CORES_PRODUTOS')
             ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $PRODUCTS->ID)
             ->get();
@@ -312,7 +314,6 @@ class ProductRepository implements InterfacesProductInterface
                 if($produto){
                     $quantidade = $request->quantidade_inicial;
                     $mtController->removeQuantidadeMaterial($materias, $quantidade);
-                    $estoque->storeProdutoInEstoque($produto->ID, $quantidade, 'P');
                     $helper->commit();
                     return response()->json(
                         $image
