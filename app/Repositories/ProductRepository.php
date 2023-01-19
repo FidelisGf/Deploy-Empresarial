@@ -150,11 +150,14 @@ class ProductRepository implements InterfacesProductInterface
             $tmp = Product::where('NOME', $search)->first();
             if($tmp === null || empty($tmp)){
                 $wordFragments = explode(" ", $search);
-                if(count($wordFragments) != 0){
+                if(count($wordFragments) >= 2){
                     $PRODUCTS = $PRODUCTS->where('PRODUCTS.NOME', 'LIKE', '%'. $wordFragments[0].'%');
                     for($i = 1; $i < count($wordFragments); $i++){
                         $PRODUCTS = $PRODUCTS->orWhere('PRODUCTS.NOME', 'LIKE', '%'. $wordFragments[$i].'%');
                     }
+                }else{
+                    $search = ucfirst($search);
+                    $PRODUCTS = $PRODUCTS->where('PRODUCTS.NOME', 'LIKE', '%'. $search.'%');
                 }
             }else{
                 $PRODUCTS = $PRODUCTS->where('PRODUCTS.NOME', '=', $search);
@@ -170,7 +173,7 @@ class ProductRepository implements InterfacesProductInterface
         if($request->filled('Precos')){
             switch($request->Precos){
                 case 1:
-                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [1, 25]);
+                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(1), floatval(25)]);
                     break;
                 case 2:
                     $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(25), floatval(50)]);
@@ -194,7 +197,7 @@ class ProductRepository implements InterfacesProductInterface
         }
 
         $PRODUCTS = $PRODUCTS
-        ->orderBy('ID', 'desc')->paginate(20);
+        ->orderBy('ID', 'asc')->paginate(20);
         return $PRODUCTS;
     }
 

@@ -271,6 +271,10 @@ class PedidosRepository implements PedidoInterface
                 $helper->commit();
             }
             $helper->startTransaction();
+            if($pedido->DT_PAGAMENTO == null){
+                $pedido->APROVADO = "$request->aprovado";
+                $pedido->DT_PAGAMENTO = now();
+            }
             $pedido->save();
             $helper->commit();
             return $pedido;
