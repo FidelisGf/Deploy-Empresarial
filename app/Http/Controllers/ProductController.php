@@ -52,4 +52,7 @@ class ProductController extends Controller
     public function countProducts(ProductRepository $productRepository){
         return $productRepository->countProducts();
     }
+    public function getProdutosDestaques(Request $request, ProductRepository $productRepository){
+        return $productRepository->getProdutosDestaques($request);
+    }
 }

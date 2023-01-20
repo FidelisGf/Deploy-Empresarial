@@ -102,6 +102,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
     Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
 
+
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');
     Route::resource('despesas', 'DespesaController');
@@ -116,7 +117,9 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::resource('estoques', 'EstoqueController');
     Route::resource('usuarios', 'UsuarioController')->except(['show', 'update']);
     Route::resource('penalidades', 'PenalidadeController')->middleware(FuncMiddleware::class);
+
 });
 Route::resource('categorys', 'CategoryController');
 Route::resource('products', 'ProductController')->except(['destroy']);
 Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);
+Route::get('produtosDestaques', [ProductController::class, 'getProdutosDestaques']);

@@ -449,6 +449,40 @@ class ProductRepository implements InterfacesProductInterface
             return false;
         }
     }
+    public function getProdutosDestaques(Request $request){
+        try{
+            if($request->filled('Shop')){
+                $ID = DB::table('INTERNET')
+                ->select('INTERNET.ID_EMPRESA')
+                ->where('INTERNET.STATUS', '=', 1)
+                ->first();
+                $ID = $ID->ID_EMPRESA;
+            }else{
+                $ID = auth()->user()->empresa->ID;
+
+            }
+            $PRODUCTS = DB::table('EMPRESAS')->where('EMPRESAS.ID', $ID)
+            ->join('ESTOQUES', 'ESTOQUES.EMPRESA_ID', '=', 'EMPRESAS.ID')
+            ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
+            ->join('CATEGORIAS', 'CATEGORIAS.ID_CATEGORIA', '=', 'PRODUCTS.ID_CATEGORIA')
+            ->join('AVALIACAO', 'AVALIACAO.ID_PRODUTO', '=', 'PRODUCTS.ID')
+            ->selectRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS.NOME_C, PRODUCTS.ID, PRODUCTS.NOME,
+            PRODUCTS.VALOR,  sum(ESTOQUES.QUANTIDADE) as QUANTIDADE,
+            PRODUCTS.IMAGE, PRODUCTS.DESC, sum(ESTOQUES.SAIDAS) as SAIDAS,
+            AVALIACAO.NOTA, (sum(AVALIACAO.NOTA) / count(AVALIACAO.NOTA)) as
+            media')
+            ->where('ESTOQUES.QUANTIDADE', '>', 0)
+            ->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
+            .NOME_C, PRODUCTS.ID, PRODUCTS.NOME,PRODUCTS.VALOR,PRODUCTS.DESC,PRODUCTS.IMAGE,
+            AVALIACAO.NOTA')
+            ->orderByRaw('SAIDAS desc, AVALIACAO.NOTA')
+            ->paginate(12);
+
+            return $PRODUCTS;
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()],400);
+        }
+    }
     public function countProducts(){
         try{
             $user = auth()->user();
