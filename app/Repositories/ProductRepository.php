@@ -194,10 +194,14 @@ class ProductRepository implements InterfacesProductInterface
         if(!$request->filled('Shop')){
             $PRODUCTS = $PRODUCTS->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
             .NOME_C, PRODUCTS.ID, PRODUCTS.NOME, PRODUCTS.VALOR');
+
         }
 
         $PRODUCTS = $PRODUCTS
-        ->orderBy('ID', 'asc')->paginate(20);
+        ->orderBy('ID', 'asc')->paginate(15);
+        foreach($PRODUCTS as $p){
+            $p->isActive = false;
+        }
         return $PRODUCTS;
     }
 
@@ -332,6 +336,20 @@ class ProductRepository implements InterfacesProductInterface
             );
         }
     }
+    public function getOneColorOfProduct($id){ // usado para pegar a cor padrão de um item
+        try{
+            $cor = DB::table('CORES_PRODUTOS')
+            ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $id)
+            ->join('CORES', 'CORES.ID' , '=', 'CORES_PRODUTOS.ID_COR')
+            ->get();
+            return $cor;
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+        }
+    }
+
+
+
     public function update(StoreProdutoValidator $request, $id){
         try{
             $PRODUCT = Product::FindOrFail($id);

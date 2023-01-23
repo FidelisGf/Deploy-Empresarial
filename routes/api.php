@@ -101,7 +101,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
     Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
-
+    Route::get('/getOneColorOfProduct/{id}', [ProductController::class, 'getOneColorOfProduct']);
 
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');

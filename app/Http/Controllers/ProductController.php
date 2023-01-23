@@ -55,4 +55,7 @@ class ProductController extends Controller
     public function getProdutosDestaques(Request $request, ProductRepository $productRepository){
         return $productRepository->getProdutosDestaques($request);
     }
+    public function getOneColorOfProduct($id, ProductRepository $productRepository){
+        return $productRepository->getOneColorOfProduct($id);
+    }
 }
