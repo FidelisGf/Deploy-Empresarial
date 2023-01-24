@@ -90,4 +90,7 @@ class PedidosController extends Controller
     public function storeInternetPedidos(Request $request, PedidosRepository $pedidosRepository){
         return $pedidosRepository->storeInternetPedidos($request);
     }
+    public function getProdutosFromPedidos($id, PedidosRepository $pedidosRepository){
+        return $pedidosRepository->getProdutosFromPedidos($id);
+    }
 }

@@ -96,12 +96,15 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])->middleware(FuncMiddleware::class);
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
+    Route::get('/getProdutosFromPedidos/{id}', [PedidosController::class, 'getProdutosFromPedidos']);
 
     Route::get('/checkIfPassword', [UsuarioController::class, 'checkIfPassword']);
     Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
     Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
     Route::get('/getOneColorOfProduct/{id}', [ProductController::class, 'getOneColorOfProduct']);
+
+
 
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');

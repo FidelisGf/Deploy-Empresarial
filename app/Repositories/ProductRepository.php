@@ -182,7 +182,7 @@ class ProductRepository implements InterfacesProductInterface
                     $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(50), floatval(100)]);
                     break;
                 case 4:
-                    $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(100), floatval(1000000000000)]);
+                    $PRODUCTS->where('PRODUCTS.VALOR', '>', floatval(100));
                     break;
                 case 0:
                     break;
@@ -194,7 +194,6 @@ class ProductRepository implements InterfacesProductInterface
         if(!$request->filled('Shop')){
             $PRODUCTS = $PRODUCTS->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
             .NOME_C, PRODUCTS.ID, PRODUCTS.NOME, PRODUCTS.VALOR');
-
         }
 
         $PRODUCTS = $PRODUCTS
@@ -263,8 +262,10 @@ class ProductRepository implements InterfacesProductInterface
             $PRODUCTS->IMAGE = "data:image/png;base64,$PRODUCTS->IMAGE";
             $PRODUCTS->CORES = $cores;
             $PRODUCTS->MATERIAS = $materias;
-            $avaliacoes = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)->sum('NOTA');
-            $countAva = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)->count();
+            $avaliacoes = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)
+            ->sum('NOTA');
+            $countAva = Avaliacao::where('ID_PRODUTO', $PRODUCTS->ID)
+            ->count();
             $media = 0;
             if($countAva > 0){
                 $media = floatval($avaliacoes / $countAva);

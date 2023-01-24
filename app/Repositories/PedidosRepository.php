@@ -61,6 +61,48 @@ class PedidosRepository implements PedidoInterface
         }
         return $pedido;
     }
+    public function getProdutosFromPedidos($id){
+        try{
+            $p = DB::table('PEDIDOS')
+            ->where('PEDIDOS.ID', '=', $id)
+            ->first();
+            $user = auth()->user();
+            $p->VlTemp = null;
+            if($p->ID_CUPOM != null){
+                $vlCupom = Cupom::where('ID', '=', $p->ID_CUPOM)
+                ->first();
+                $p->DESCONTO = floatval($vlCupom->DESCONTO);
+            }
+            $PRODUCTS = collect(new Product());
+            $produtos = Pedido_Itens::where('ID_PEDIDO', '=', $p->ID)
+            ->get();
+            $p->CREATED_AT = Carbon::parse($p->CREATED_AT)
+            ->format('d/m/Y H:i');
+            foreach($produtos as $prod){
+                if($p->ID_CUPOM != null){
+                    $p->VlTemp += $prod->VALOR;
+                }
+                $cor_esc = $prod->COR;
+                $tmp = $prod->QUANTIDADE;
+                $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
+                $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
+                ->where('ID_USER', '=', $user->ID)->first();
+                if($avaliacao == null || empty($avaliacao)){
+                    $prod->AVALIACAO = 0;
+                }else{
+                    $prod->AVALIACAO = floatval($avaliacao->NOTA);
+                }
+                $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
+                $prod->QUANTIDADE = $tmp;
+                $prod->COR_ESCOLHIDA = $cor_esc;
+                $PRODUCTS->push($prod);
+            }
+            $p->PRODUTOS = $PRODUCTS;
+            return response()->json($p->PRODUTOS);
+        }catch(\Exception $e){
+            return response()->json(['message', $e->getMessage()], 400);
+        }
+    }
     public function index(Request $request){
         try{
             if($request->filled('opcao')){
@@ -80,41 +122,6 @@ class PedidosRepository implements PedidoInterface
                     ->selectRaw('PEDIDOS.ID, PEDIDOS.VALOR_TOTAL, PEDIDOS.METODO_PAGAMENTO,
                     PEDIDOS.CREATED_AT, PEDIDOS.APROVADO, PEDIDOS.ID_CUPOM')
                     ->paginate(20);
-
-                    foreach($Pedidos as $p){
-                        $p->VlTemp = null;
-                        if($p->ID_CUPOM != null){
-                            $vlCupom = Cupom::where('ID', '=', $p->ID_CUPOM)
-                            ->first();
-                            $p->DESCONTO = floatval($vlCupom->DESCONTO);
-                        }
-                        $PRODUCTS = collect(new Product());
-                        $produtos = Pedido_Itens::where('ID_PEDIDO', '=', $p->ID)
-                        ->get();
-                        $p->CREATED_AT = Carbon::parse($p->CREATED_AT)
-                        ->format('d/m/Y H:i');
-                        foreach($produtos as $prod){
-                            if($p->ID_CUPOM != null){
-                                $p->VlTemp += $prod->VALOR;
-                            }
-                            $cor_esc = $prod->COR;
-                            $tmp = $prod->QUANTIDADE;
-                            $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
-                            $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
-                            ->where('ID_USER', '=', $user->ID)->first();
-                            if($avaliacao == null || empty($avaliacao)){
-                                $prod->AVALIACAO = 0;
-                            }else{
-                                $prod->AVALIACAO = floatval($avaliacao->NOTA);
-                            }
-                            $prod->IMAGE = "data:image/png;base64,$prod->IMAGE";
-                            $prod->QUANTIDADE = $tmp;
-                            $prod->COR_ESCOLHIDA = $cor_esc;
-                            $PRODUCTS->push($prod);
-                        }
-                        $p->PRODUTOS = $PRODUCTS;
-                    }
-
                 }else{
                     $Pedidos = Pedidos::where('ID_EMPRESA', $empresa->ID)
                     ->paginate(20);
@@ -342,7 +349,8 @@ class PedidosRepository implements PedidoInterface
                 $pedido->ID_CUPOM = $request->ID_CUPOM;
                 $desconto = Cupom::where('ID', '=', $pedido->ID_CUPOM)->first();
                 $desconto = $desconto->DESCONTO;
-                $pedido->VALOR_TOTAL = $pedido->VALOR_TOTAL - ((floatval($pedido->VALOR_TOTAL) * floatval($desconto)) / 100);
+                $pedido->VALOR_TOTAL = $pedido->VALOR_TOTAL -
+                ((floatval($pedido->VALOR_TOTAL) * floatval($desconto)) / 100);
             }
             $pedido->save();
             foreach($ItensPedido as $item){

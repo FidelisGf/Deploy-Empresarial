@@ -104,9 +104,7 @@ class UsuarioRepository implements UsuarioInterface
     public function getPerfilUserInternet(){
             try{
                 $user = auth()->user();
-                $user->BLOB = $user->IMAGE;
                 $user->IMAGE = "data:image/png;base64,$user->IMAGE";
-
                 $pRealizados = Pedidos::where('ID_USER', $user->ID)->count();
                 $pPagos = Pedidos::where('ID_USER', $user->ID)->where('DT_PAGAMENTO', '!=', null)->count();
                 $user->pPagos = $pPagos;
