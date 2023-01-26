@@ -5,6 +5,7 @@ namespace App\Repositories;
 use App\Empresa;
 use App\Http\interfaces\EmpresaInterface;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class EmpresaRepository implements EmpresaInterface
@@ -27,11 +28,23 @@ class EmpresaRepository implements EmpresaInterface
             );
         }
     }
-    public function getEmpresaFromUser(){
+    public function getEmpresaFromUser(Request $request){
         try{
-            $user = auth()->user();
-            $empresa = $user->empresa;
-            return $empresa;
+            if($request->filled('Shop')){
+                $ID = DB::table('INTERNET')
+                ->select('INTERNET.ID_EMPRESA')
+                ->where('INTERNET.STATUS', '=', 1)
+                ->first();
+                $ID = $ID->ID_EMPRESA;
+                $empresa = Empresa::findOrFail($ID);
+                return $empresa->NOME_FANTASIA;
+
+            }else{
+                $user = auth()->user();
+                $empresa = $user->empresa;
+                return $empresa;
+            }
+
         }catch(\Exception $e){
             return response()->json(
                 [
@@ -85,6 +98,24 @@ class EmpresaRepository implements EmpresaInterface
     {
         try{
             return Empresa::FindOrFail($id);
+        }catch(\Exception $e){
+            return response()->json(
+                [
+                    "message" => $e->getMessage()
+                ],400
+            );
+        }
+    }
+    public function setConfigSite(Request $request){
+        try{
+
+            $empresa = auth()->user()->empresa;
+            $image = base64_encode(file_get_contents($request->file('FUNDO')->path()));
+            $empresa->IMG_FUNDO = $image;
+            $image2 = base64_encode(file_get_contents($request->file('ICON')->path()));
+            $empresa->ICON = $image2;
+            $empresa->save();
+            return response()->json('foi');
         }catch(\Exception $e){
             return response()->json(
                 [

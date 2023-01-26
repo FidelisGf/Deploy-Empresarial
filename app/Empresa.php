@@ -16,7 +16,8 @@ class Empresa extends Model
     protected $generator = 'GEN_EMPRESAS_ID';
     protected $keyType = 'integer';
     public $timestamps = true;
-    protected $fillable = ['NOME', 'CNPJ','ENDERECO', 'EMAIL', 'NOME_FANTASIA', 'INC_ESTADUAL'];
+    protected $fillable = ['NOME', 'CNPJ','ENDERECO', 'EMAIL', 'NOME_FANTASIA',
+    'INC_ESTADUAL', 'ICON', 'IMG_FUNDO'];
     protected $dates = ['DELETED_AT', 'CREATED_AT', 'UPDATED_AT'];
     public function category(){
         return $this->hasMany(Category::class, 'ID_EMPRESA', 'ID');

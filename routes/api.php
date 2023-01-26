@@ -69,6 +69,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('cupons', [CupomController::class, 'getCupom']);
     Route::post('cupons', [CupomController::class, 'applyCupom']);
 
+    Route::post('/setConfigSite', [EmpresaController::class, 'setConfigSite']);
     Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])->middleware(FuncMiddleware::class);
     Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])->middleware(FuncMiddleware::class);
     Route::post('/vincularUserEmpresa', [UsuarioController::class, 'vinculaUsuarioEmpresa'])->middleware(FuncMiddleware::class);
@@ -95,6 +96,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/showAjuste', [ConfigFolhaController::class , 'showAjuste'])->middleware(FuncMiddleware::class);
     Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])->middleware(FuncMiddleware::class);
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
+
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
     Route::get('/getProdutosFromPedidos/{id}', [PedidosController::class, 'getProdutosFromPedidos']);
 

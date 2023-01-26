@@ -37,7 +37,7 @@ class UsuarioRepository implements UsuarioInterface
                 'role' => function($query){
                     $query->select('ID', 'NOME');
                 }
-            ])->where('ID_ROLE', '!=', 1)->paginate(15);
+            ])->where('ID_ROLE', '!=', 1)->where('ID_ROLE', '!=', 4)->paginate(15);
             return $usuarios;
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()]);
@@ -192,9 +192,9 @@ class UsuarioRepository implements UsuarioInterface
             $user->CPF = $request->CPF;
             $user->EMAIL = $request->EMAIL;
             $user->SALARIO = $request->SALARIO;
-                // if(!$request->filled('Shop')){
-                //     $user->ID_ROLE = $request->ID_ROLE;
-                // }
+            if(!$request->filled('Shop')){
+                    $user->ID_ROLE = $request->ID_ROLE;
+            }
             $user->save();
             return response()->json(['message' => 'Usuario Editado com sucesso !']);
         }catch(\Exception $e){
@@ -335,6 +335,7 @@ class UsuarioRepository implements UsuarioInterface
              })
             ->where('USERS.EMPRESA_ID', $empresa->ID)
             ->where('USERS.ID_ROLE', '!=', 1)
+            ->where('USERS.ID_ROLE', '!=', 4)
             ->groupByRaw('1, 2, 3, 5, 9')
             ->get();
             foreach($salarios as $s){

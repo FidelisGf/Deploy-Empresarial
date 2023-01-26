@@ -14,8 +14,8 @@ class EmpresaController extends Controller
         return $empresaRepository->index();
     }
 
-    public function getEmpresaFromUser(EmpresaRepository $empresaRepository){
-        return $empresaRepository->getEmpresaFromUser();
+    public function getEmpresaFromUser(EmpresaRepository $empresaRepository, Request $request){
+        return $empresaRepository->getEmpresaFromUser($request);
     }
 
     public function create()
@@ -49,6 +49,10 @@ class EmpresaController extends Controller
         return $empresaRepository->destroy($id);
     }
 
+
+    public function setConfigSite(Request $request, EmpresaRepository $empresaRepository){
+        return $empresaRepository->setConfigSite($request);
+    }
 
 
 
