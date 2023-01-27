@@ -17,6 +17,7 @@ use App\Http\Controllers\PenalidadeController;
 use App\Http\Controllers\ProductController;
 use App\Http\Controllers\ResetPwController;
 use App\Http\Controllers\TagController;
+use App\Http\Controllers\Tema_EmpresaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
 use App\Http\Middleware\FuncMiddleware;
@@ -58,7 +59,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/products/search', [ProductController::class, 'search']);
     Route::get('/allByCategory/{id}', [ProductController::class, 'findAllProductByCategory']);
     Route::get('/checaEmpUser', [UsuarioController::class, 'checkIfUserHasEmpresa'] );
-    Route::get('/getEmpresaFromUser', [EmpresaController::class, 'getEmpresaFromUser']);
+
     Route::get('/profile', [UsuarioController::class, 'profile']);
     Route::get('despesasByTag/{id}', [DespesaController::class, 'despesasByTag']);
     Route::get('sumDespesasMensais', [DespesaController::class, 'sumDespesasMensais']);
@@ -69,7 +70,10 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('cupons', [CupomController::class, 'getCupom']);
     Route::post('cupons', [CupomController::class, 'applyCupom']);
 
+
     Route::post('/setConfigSite', [EmpresaController::class, 'setConfigSite']);
+    Route::post('/updateConfigSite', [EmpresaController::class, 'updateConfigSite']);
+
     Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])->middleware(FuncMiddleware::class);
     Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])->middleware(FuncMiddleware::class);
     Route::post('/vincularUserEmpresa', [UsuarioController::class, 'vinculaUsuarioEmpresa'])->middleware(FuncMiddleware::class);
@@ -108,6 +112,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
 
 
+
+
     Route::resource('materiais', 'MateriaisController');
     Route::resource('medidas', 'MedidasController');
     Route::resource('despesas', 'DespesaController');
@@ -128,3 +134,6 @@ Route::resource('categorys', 'CategoryController');
 Route::resource('products', 'ProductController')->except(['destroy']);
 Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);
 Route::get('produtosDestaques', [ProductController::class, 'getProdutosDestaques']);
+Route::get('/getConfigSite', [EmpresaController::class, 'getConfigSite']);
+Route::get('/getEmpresaFromUser', [EmpresaController::class, 'getEmpresaFromUser']);
+Route::get('/getTema', [Tema_EmpresaController::class, 'show']);

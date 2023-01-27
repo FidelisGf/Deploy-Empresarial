@@ -53,6 +53,13 @@ class EmpresaController extends Controller
     public function setConfigSite(Request $request, EmpresaRepository $empresaRepository){
         return $empresaRepository->setConfigSite($request);
     }
+    public function getConfigSite(EmpresaRepository $empresaRepository, Request $request){
+        return $empresaRepository->getConfigSite($request);
+    }
+
+    public function updateConfigSite(Request $request, EmpresaRepository $empresaRepository){
+        return $empresaRepository->updateConfigSite($request);
+    }
 
 
 

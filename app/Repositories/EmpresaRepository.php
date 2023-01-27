@@ -106,16 +106,39 @@ class EmpresaRepository implements EmpresaInterface
             );
         }
     }
+    public function updateConfigSite(Request $request){
+        try{
+            $empresa = auth()->user()->empresa->ID;
+            $empresa = Empresa::where('ID', '=', $empresa)->first();
+            if($request->has('FUNDO')){
+                $image = base64_encode(file_get_contents($request->file('FUNDO')->path()));
+                $empresa->IMG_FUNDO = $image;
+            }
+            if($request->has('ICON')){
+                $image2 = base64_encode(file_get_contents($request->file('ICON')->path()));
+                $empresa->ICON = $image2;
+            }
+            $empresa->save();
+            return response()->json(['message' => 'Editado com sucesso !']);
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()],400);
+        }
+    }
     public function setConfigSite(Request $request){
         try{
-
-            $empresa = auth()->user()->empresa;
-            $image = base64_encode(file_get_contents($request->file('FUNDO')->path()));
-            $empresa->IMG_FUNDO = $image;
-            $image2 = base64_encode(file_get_contents($request->file('ICON')->path()));
-            $empresa->ICON = $image2;
+            $empresa = auth()->user()->empresa->ID;
+            $empresa = Empresa::where('ID', '=', $empresa)->first();
+            if($request->has('FUNDO')){
+                $image = base64_encode(file_get_contents($request->file('FUNDO')->path()));
+                $empresa->IMG_FUNDO = $image;
+            }
+            if($request->has('ICON')){
+                $image2 = base64_encode(file_get_contents($request->file('ICON')->path()));
+                $empresa->ICON = $image2;
+            }
             $empresa->save();
-            return response()->json('foi');
+            return response()->json(['message' => 'salvo com sucesso']);
+
         }catch(\Exception $e){
             return response()->json(
                 [
@@ -149,14 +172,40 @@ class EmpresaRepository implements EmpresaInterface
             Empresa::FindOrFail($id)->delete();
             return response()->json([
                 "message" => "Empresa Deletada com sucesso !"
-            ]);
+            ],200);
         }catch(\Exception $e){
             return response()->json(
                 [
                     "message" => $e->getMessage()
-                ],200
+                ],400
             );
         }
     }
 
+    public function getConfigSite(Request $request){
+        try{
+            if($request->filled('Shop')){
+                $ID = DB::table('INTERNET')
+                ->select('INTERNET.ID_EMPRESA')
+                ->where('INTERNET.STATUS', '=', 1)
+                ->first();
+                $ID = $ID->ID_EMPRESA;
+                $empresa = Empresa::findOrFail($ID);
+            }else{
+                $empresa = auth()->user()->empresa;
+            }
+
+            if($empresa->IMG_FUNDO != null){
+                $empresa->IMG_FUNDO = "data:image/png;base64,$empresa->IMG_FUNDO";
+            }
+            if($empresa->ICON != null){
+                $empresa->ICON = "data:image/png;base64,$empresa->ICON";
+            }
+
+            return response()->json(["fundo" => $empresa->IMG_FUNDO,
+            "icon" => $empresa->ICON]);
+        }catch(\Exception $e){
+            return response()->json(["message" => $e->getMessage()],400);
+        }
+    }
 }
