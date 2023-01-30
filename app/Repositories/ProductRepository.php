@@ -192,7 +192,8 @@ class ProductRepository implements InterfacesProductInterface
             $PRODUCTS = $PRODUCTS->where('CATEGORIAS.ID_CATEGORIA', '=', $request->categoria);
         }
         if(!$request->filled('Shop')){
-            $PRODUCTS = $PRODUCTS->groupByRaw('CATEGORIAS.ID_CATEGORIA, CATEGORIAS
+            $PRODUCTS = $PRODUCTS->groupByRaw('CATEGORIAS.ID_CATEGORIA,
+            CATEGORIAS
             .NOME_C, PRODUCTS.ID, PRODUCTS.NOME, PRODUCTS.VALOR');
         }
 

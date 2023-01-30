@@ -12,7 +12,8 @@ class Tema_Empresa extends Model
     protected $keyType = 'integer';
     public $timestamps = false;
     protected $fillable = ['ID', 'PRIMARIA', 'SECUNDARIA',
-    'ID_EMPRESA', 'NAVBAR', 'FOOTER', 'FILTROS', 'CARDS_PERFIL', 'CARD_PEDIDOS'];
+    'ID_EMPRESA', 'NAVBAR', 'FOOTER', 'FILTROS',
+    'CARDS_PERFIL', 'CARD_PEDIDOS'];
 
 
 }

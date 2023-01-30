@@ -119,7 +119,12 @@ class EmpresaRepository implements EmpresaInterface
                 $empresa->ICON = $image2;
             }
             $empresa->save();
-            return response()->json(['message' => 'Editado com sucesso !']);
+            if($request->filled('CORES')){
+                $temas = new TemaEmpresaRepository();
+                return $temas->setTema($request);
+            }else{
+                return response()->json(['message' => 'Editado com sucesso !']);
+            }
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);
         }
