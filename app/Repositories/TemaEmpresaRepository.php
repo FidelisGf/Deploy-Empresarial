@@ -33,29 +33,35 @@ class TemaEmpresaRepository
                     $tema_empresa = new Tema_Empresa();
                 }
                 if(array_key_exists(0, $request->CORES)){
-                    $tema_empresa->PRIMARIA = $request->CORES[0];
+                    if(!empty($request->CORES[0]))
+                        $tema_empresa->PRIMARIA = $request->CORES[0];
                 }
                 if(array_key_exists(1, $request->CORES)){
-                    $tema_empresa->SECUNDARIA = $request->CORES[1];
+                    if(!empty($request->CORES[1]))
+                        $tema_empresa->SECUNDARIA = $request->CORES[1];
                 }
                 if(array_key_exists(2, $request->CORES)){
-                    $tema_empresa->NAVBAR =
-                    $request->CORES[2];
+                    if(!empty($request->CORES[2]))
+                        $tema_empresa->NAVBAR = $request->CORES[2];
                 }
                 if(array_key_exists(3, $request->CORES)){
-                    $tema_empresa->FILTROS = $request->CORES[3];
+                    if(!empty($request->CORES[3]))
+                        $tema_empresa->FILTROS = $request->CORES[3];
                 }
 
                 if(array_key_exists(4, $request->CORES)){
-                    $tema_empresa->FOOTER = $request->CORES[4];
+                    if(!empty($request->CORES[4]))
+                        $tema_empresa->FOOTER = $request->CORES[4];
                 }
 
                 if(array_key_exists(5, $request->CORES)){
-                    $tema_empresa->CARDS_PERFIL = $request->CORES[5];
+                    if(!empty($request->CORES[5]))
+                        $tema_empresa->CARDS_PERFIL = $request->CORES[5];
                 }
 
                 if(array_key_exists(6, $request->CORES)){
-                    $tema_empresa->CARD_PEDIDOS = $request->CORES[6];
+                    if(!empty($request->CORES[6]))
+                        $tema_empresa->CARD_PEDIDOS = $request->CORES[6];
                 }
                 $tema_empresa->save();
                 return response()->json(['message' => 'Editado com sucesso !']);
