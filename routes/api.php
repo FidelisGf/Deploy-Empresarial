@@ -74,32 +74,84 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/setConfigSite', [EmpresaController::class, 'setConfigSite']);
     Route::post('/updateConfigSite', [EmpresaController::class, 'updateConfigSite']);
 
-    Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])->middleware(FuncMiddleware::class);
-    Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])->middleware(FuncMiddleware::class);
-    Route::post('/vincularUserEmpresa', [UsuarioController::class, 'vinculaUsuarioEmpresa'])->middleware(FuncMiddleware::class);
-    Route::get('/empresaPorUsuario', [UsuarioController::class, 'getEmpresaByUser'])->middleware(FuncMiddleware::class);
-    Route::get('/getVendasPorDia', [VendaController::class, 'getVendasPorDia'])->middleware(FuncMiddleware::class);
-    Route::get("/getLucroAndGastos", [VendaController::class, 'getLucroAndGastos'])->middleware(FuncMiddleware::class);
-    Route::get('/getTotalVendasUltimosTresMeses', [VendaController::class, 'getTotalVendasInTheLastThreeMonths'])->middleware(FuncMiddleware::class);
-    Route::post('/addEstoque', [EstoqueController::class, 'addEstoque'])->middleware(FuncMiddleware::class);
-    Route::get('/pedidos/{id}', [PedidosController::class, 'show'])->middleware(FuncMiddleware::class);
-    Route::put('/pedidos/{id}', [PedidosController::class, 'update'])->middleware(FuncMiddleware::class);
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])->middleware(FuncMiddleware::class);
-    Route::put('/products/{id}', [ProductController::class, 'update'])->middleware(FuncMiddleware::class);
-    Route::put('aprovarPedido/{id}', [PedidosController::class, 'aprovarPedido'])->middleware(FuncMiddleware::class);
-    Route::get('/getActiveUsers', [UsuarioController::class, 'getActiveUsers'])->middleware(FuncMiddleware::class);
-    Route::get('/getPenalidades/{id}', [UsuarioController::class, 'getPenalidades'])->middleware(FuncMiddleware::class);
-    Route::get('/getVendasByUser/{id}', [UsuarioController::class, 'getVendasByUser'])->middleware(FuncMiddleware::class);
-    Route::get('/getUserMediaVendasByAno/{id}', [UsuarioController::class, 'getUserMediaVendasByAno'])->middleware(FuncMiddleware::class);
-    Route::get('/getUserTotalVendasByMes/{id}', [UsuarioController::class, 'getUserTotalVendasByMes'])->middleware(FuncMiddleware::class);
-    Route::get('/getHistoricoSalarioUser/{id}', [UsuarioController::class, 'getHistoricoSalarioUser'])->middleware(FuncMiddleware::class);
-    Route::post('/getFolhaSalarioUsers', [UsuarioController::class, 'getFolhaSalarioUsers'])->middleware(FuncMiddleware::class);;
-    Route::get('/getDescontoMensalByUser/{id}', [PenalidadeController::class, 'getDescontoMensalByUser'])->middleware(FuncMiddleware::class);
-    Route::post('/setAjustes', [ConfigFolhaController::class, 'setAjustes'])->middleware(FuncMiddleware::class);
-    Route::post('/makeWagePayment', [UsuarioController::class, 'makeWagePayment'])->middleware(FuncMiddleware::class);
-    Route::get('/showAjuste', [ConfigFolhaController::class , 'showAjuste'])->middleware(FuncMiddleware::class);
-    Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])->middleware(FuncMiddleware::class);
-    Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class, 'getCompleteHistoryPenalidades'])->middleware(FuncMiddleware::class);
+    Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/vincularUserEmpresa', [UsuarioController::class, 'vinculaUsuarioEmpresa'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/empresaPorUsuario', [UsuarioController::class, 'getEmpresaByUser'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getVendasPorDia', [VendaController::class, 'getVendasPorDia'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get("/getLucroAndGastos", [VendaController::class, 'getLucroAndGastos'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getTotalVendasUltimosTresMeses', [VendaController::class,
+    'getTotalVendasInTheLastThreeMonths'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/addEstoque', [EstoqueController::class, 'addEstoque'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/pedidos/{id}', [PedidosController::class, 'show'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::put('/pedidos/{id}', [PedidosController::class, 'update'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::delete('/products/{id}', [ProductController::class, 'destroy'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::put('/products/{id}', [ProductController::class, 'update'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::put('aprovarPedido/{id}', [PedidosController::class, 'aprovarPedido'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getActiveUsers', [UsuarioController::class, 'getActiveUsers'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getPenalidades/{id}', [UsuarioController::class, 'getPenalidades'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getVendasByUser/{id}', [UsuarioController::class, 'getVendasByUser'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getUserMediaVendasByAno/{id}', [UsuarioController::class, 'getUserMediaVendasByAno'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getUserTotalVendasByMes/{id}', [UsuarioController::class, 'getUserTotalVendasByMes'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getHistoricoSalarioUser/{id}', [UsuarioController::class, 'getHistoricoSalarioUser'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/getFolhaSalarioUsers', [UsuarioController::class, 'getFolhaSalarioUsers'])
+    ->middleware(FuncMiddleware::class);
+    Route::get('/getDescontoMensalByUser/{id}', [PenalidadeController::class, 'getDescontoMensalByUser'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/setAjustes', [ConfigFolhaController::class, 'setAjustes'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/makeWagePayment', [UsuarioController::class, 'makeWagePayment'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/showAjuste', [ConfigFolhaController::class , 'showAjuste'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class,
+    'getCompleteHistoryPenalidades'])
+    ->middleware(FuncMiddleware::class);
 
     Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
     Route::get('/getProdutosFromPedidos/{id}', [PedidosController::class, 'getProdutosFromPedidos']);
@@ -109,9 +161,6 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
     Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
     Route::get('/getOneColorOfProduct/{id}', [ProductController::class, 'getOneColorOfProduct']);
-
-
-
 
 
     Route::resource('materiais', 'MateriaisController');
