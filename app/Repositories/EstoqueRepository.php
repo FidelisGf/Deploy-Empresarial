@@ -75,8 +75,10 @@ class EstoqueRepository implements EstoqueInterface
                 $user = auth()->user();
                 $empresa = $user->empresa;
 
-                $PRODUCTS = DB::table("ESTOQUES")->where('ESTOQUES.EMPRESA_ID', '=', $empresa->ID)
-                ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')->select('PRODUCTS.ID',
+                $PRODUCTS = DB::table("ESTOQUES")
+                ->where('ESTOQUES.EMPRESA_ID', '=', $empresa->ID)
+                ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
+                ->select('PRODUCTS.ID',
                 'PRODUCTS.NOME', 'PRODUCTS.VALOR', 'ESTOQUES.QUANTIDADE', 'ESTOQUES.SAIDAS')
                 ->orderBy('ESTOQUES.QUANTIDADE', 'desc')
                 ->get();
@@ -86,7 +88,8 @@ class EstoqueRepository implements EstoqueInterface
                 $user = auth()->user();
                 $empresa = $user->empresa;
 
-                $PRODUCTS = Estoque::where('EMPRESA_ID', '=', $empresa->ID)->orderBy('QUANTIDADE', 'desc')
+                $PRODUCTS = Estoque::where('EMPRESA_ID', '=', $empresa->ID)
+                ->orderBy('QUANTIDADE', 'desc')
                 ->with([
                     'product' => function($query){
                         $query->select('ID', 'NOME', 'VALOR', 'DESC');
@@ -154,7 +157,8 @@ class EstoqueRepository implements EstoqueInterface
             $empresa = $user->empresa;
 
             $Estoque = Estoque::where('EMPRESA_ID', '=', $empresa->ID)
-            ->where('PRODUCT_ID', '=', $product_id)->where('COR', '=', $cor)
+            ->where('PRODUCT_ID', '=', $product_id)
+            ->where('COR', '=', $cor)
             ->first();
 
             $tmp = $Estoque;

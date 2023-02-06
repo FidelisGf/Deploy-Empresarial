@@ -18,7 +18,10 @@ class ConfigFolhaRepository
             $dtPagamento = Carbon::parse($request->DT_PAGAMENTO);
             $dtAdiantamento = Carbon::parse($request->DT_ADIANTAMENTO);
             $empresa = auth()->user()->empresa;
-            $config = ConfigFolha::where('ID_EMPRESA', $empresa->ID)->first();
+
+            $config = ConfigFolha::where('ID_EMPRESA', $empresa->ID)
+            ->first();
+
             if($config === null){
                 $config = new ConfigFolha();
             }
@@ -30,14 +33,18 @@ class ConfigFolhaRepository
                 $config->DT_ADIANTAMENTO = null;
             }
             $config->save();
-            return response()->json(['message' => 'Configurações de Folha realizadas com sucesso']);
+            return response()->json(['message' =>
+            'Configurações de Folha realizadas com sucesso']);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()]);
         }
     }
     public function showAjuste(){
         $empresa = auth()->user()->empresa;
-        $config = ConfigFolha::where('ID_EMPRESA', $empresa->ID)->first();
+
+        $config = ConfigFolha::where('ID_EMPRESA', $empresa->ID)
+        ->first();
+
         if($config === null){
             $config = new ConfigFolha();
             $config->DT_SALARIO = '';

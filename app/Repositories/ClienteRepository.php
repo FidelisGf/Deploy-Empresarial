@@ -20,7 +20,10 @@ class ClienteRepository implements ClienteInterface
         try{
             $user = auth()->user();
             $empresa = $user->empresa;
-            $clientes = Cliente::where('ID_EMPRESA', $empresa->ID)->paginate(8);
+
+            $clientes = Cliente::where('ID_EMPRESA', $empresa->ID)
+            ->paginate(8);
+
             return $clientes;
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);

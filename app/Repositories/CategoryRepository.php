@@ -30,7 +30,9 @@ class CategoryRepository implements CategoryInterface //Precisa de refatoração
                 $empresa = $user->empresa;
                 $ID = $empresa->ID;
             }
-            $Category = Category::where('ID_EMPRESA', '=',  $ID)->get();
+
+            $Category = Category::where('ID_EMPRESA', '=',  $ID)
+            ->get();
             return $Category;
         }catch(\Exception $e){
             return response()->json(

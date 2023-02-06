@@ -2,6 +2,7 @@
 
 namespace App\Notifications;
 
+use App\Product;
 use Illuminate\Bus\Queueable;
 use Illuminate\Contracts\Queue\ShouldQueue;
 use Illuminate\Notifications\Messages\MailMessage;
@@ -12,16 +13,26 @@ class EmailNotify extends Notification implements ShouldQueue
     use Queueable;
     private $pedido;
     private $FakeProducts;
+    private $bool;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($pedido, $FakeProducts)
+    public function __construct($pedido, $FakeProducts, $bool)
     {
         $this->pedido = $pedido;
-        $this->FakeProducts = $FakeProducts;
+        if($bool){
+            foreach($FakeProducts as $f){
+                $qntd = $f->QUANTIDADE;
+                $f = Product::FindOrFail($f->ID_PRODUTO);
+                $f->QUANTIDADE = $qntd;
+            }
+            $this->FakeProducts = $FakeProducts;
+        }else{
+            $this->FakeProducts = $FakeProducts;
+        }
     }
 
     /**
@@ -46,7 +57,9 @@ class EmailNotify extends Notification implements ShouldQueue
         return (new MailMessage)
         ->from('test@example.com', 'Seu pedido')
         ->greeting('Ola Sr(a)')
-        ->markdown('mail.pedido.paid', ['pedido' => $this->pedido, 'PRODUTOS' => $this->FakeProducts]);
+        ->markdown('mail.pedido.paid',
+        ['pedido' => $this->pedido,
+        'PRODUTOS' => $this->FakeProducts]);
     }
 
     /**

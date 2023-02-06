@@ -48,8 +48,11 @@ class PenalidadeRepository implements PenalidadeInterface
             $monthStart = Carbon::parse($monthStart);
             $monthFinal = date('30-M-Y');
             $monthFinal = Carbon::parse($monthFinal);
+
             $totalDesconto  = floatval(Penalidade::where('ID_USER', $id)
-            ->whereBetween('DATA', [$monthStart, $monthFinal])->sum('DESCONTO'));
+            ->whereBetween('DATA', [$monthStart, $monthFinal])
+            ->sum('DESCONTO'));
+
             return response()->json([$totalDesconto]);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);

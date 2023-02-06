@@ -31,10 +31,12 @@ class EmpresaRepository implements EmpresaInterface
     public function getEmpresaFromUser(Request $request){
         try{
             if($request->filled('Shop')){
+
                 $ID = DB::table('INTERNET')
                 ->select('INTERNET.ID_EMPRESA')
                 ->where('INTERNET.STATUS', '=', 1)
                 ->first();
+
                 $ID = $ID->ID_EMPRESA;
                 $empresa = Empresa::findOrFail($ID);
                 return $empresa->NOME_FANTASIA;

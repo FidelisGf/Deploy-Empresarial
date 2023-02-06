@@ -62,7 +62,6 @@ class MateriaisRepository implements MateriaisInterface
     }
     public function removeQuantidadeMaterial($materiais, $quantidade){
         $user = auth()->user();
-        $empresa = $user->empresa;
         try{
             foreach($materiais as $mat){
                 $tmp = $mat;

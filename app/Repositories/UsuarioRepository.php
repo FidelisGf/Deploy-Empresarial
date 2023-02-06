@@ -430,7 +430,10 @@ class UsuarioRepository implements UsuarioInterface
                 $penalidades = Penalidade::where('ID_USER', $s->ID)->get();
                     if(!empty($penalidades)){
                         foreach($penalidades as $p){
-                            $historico = Historico_Penalidade::where('ID_PENALIDADE', $p->ID)->first();
+
+                            $historico = Historico_Penalidade::where('ID_PENALIDADE', $p->ID)
+                            ->first();
+
                             if($historico->VALOR_ATUAL <= 0){
                                 $p->delete();
                             }else{
@@ -466,6 +469,7 @@ class UsuarioRepository implements UsuarioInterface
             $pagamentoSalario->ID_EMPRESA = $empresa->ID;
             $pagamentoSalario->DATA = now()->format('Y-m-d H:i');
             $pagamentoSalario->save();
+
             return response()->json(['message' => 'Pagamento Registrado com sucesso !',
             'data' => $salarios, 'totalPago' => $totalPago]);
         }catch(\Exception $e){

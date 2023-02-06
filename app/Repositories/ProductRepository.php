@@ -69,11 +69,15 @@ class ProductRepository implements InterfacesProductInterface
             }else{
                 $user = auth()->user();
                 $empresa = $user->empresa;
-                $PRODUCTS = Empresa::FindOrFail($empresa->ID)->product()->with([
+
+                $PRODUCTS = Empresa::FindOrFail($empresa->ID)
+                ->product()->with([
                     'category' => function($query){
                         $query->select('ID_CATEGORIA', 'NOME_C');
                     }
-                ])->orderBy('PRODUCTS.VALOR', 'asc')->paginate(20);
+                ])->orderBy('PRODUCTS.VALOR', 'asc')
+                ->paginate(20);
+
                 return $PRODUCTS;
             }
         }catch(\Exception $e){
@@ -173,13 +177,16 @@ class ProductRepository implements InterfacesProductInterface
         if($request->filled('Precos')){
             switch($request->Precos){
                 case 1:
-                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(1), floatval(25)]);
+                    $PRODUCTS = $PRODUCTS
+                    ->whereBetween('PRODUCTS.VALOR', [floatval(1), floatval(25)]);
                     break;
                 case 2:
-                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(25), floatval(50)]);
+                    $PRODUCTS = $PRODUCTS
+                    ->whereBetween('PRODUCTS.VALOR', [floatval(25), floatval(50)]);
                     break;
                 case 3:
-                    $PRODUCTS = $PRODUCTS->whereBetween('PRODUCTS.VALOR', [floatval(50), floatval(100)]);
+                    $PRODUCTS = $PRODUCTS
+                    ->whereBetween('PRODUCTS.VALOR', [floatval(50), floatval(100)]);
                     break;
                 case 4:
                     $PRODUCTS->where('PRODUCTS.VALOR', '>', floatval(100));
@@ -254,8 +261,11 @@ class ProductRepository implements InterfacesProductInterface
             $cores = collect(new Cor());
             foreach($coresEscolhidas as $c){
                 $c = Cor::FindOrFail($c->ID_COR);
-                $c->ESTOQUE = Estoque::where('PRODUCT_ID', '=', $id)->where('COR', '=', $c->HASH)
+
+                $c->ESTOQUE = Estoque::where('PRODUCT_ID', '=', $id)
+                ->where('COR', '=', $c->HASH)
                 ->first();
+
                 $c->ESTOQUE = $c->ESTOQUE->QUANTIDADE;
                 $cores->push($c);
             }
@@ -308,8 +318,8 @@ class ProductRepository implements InterfacesProductInterface
                 }
                 $materias = collect(new Materiais());
 
-                $request->MATERIAIS = json_decode($request->MATERIAIS);
-                foreach($request->MATERIAIS as $material){
+                $MATERIAIS = json_decode($request->MATERIAIS);
+                foreach($MATERIAIS as $material){
                     $produto_material = new Produtos_Materias();
                     $materia = (object) $material;
                     $produto_material->ID_PRODUTO = $produto->ID;
@@ -431,7 +441,10 @@ class ProductRepository implements InterfacesProductInterface
             $search = ucwords($search);
             $result = Product::where('NOME', '=', $search)->first();
             if($result === null || empty($result)){
-                $result = Product::where('NOME', 'LIKE', '%'. $search.'%')->paginate(20);
+
+                $result = Product::where('NOME', 'LIKE', '%'. $search.'%')
+                ->paginate(20);
+
             }
             if($request->filled('Shop')){
                 foreach($result as $p){

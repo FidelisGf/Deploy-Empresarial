@@ -84,9 +84,14 @@ class PedidosRepository implements PedidoInterface
                 }
                 $cor_esc = $prod->COR;
                 $tmp = $prod->QUANTIDADE;
-                $prod = Product::where('ID', '=', $prod->ID_PRODUTO)->first();
+
+                $prod = Product::where('ID', '=', $prod->ID_PRODUTO)
+                ->first();
+
                 $avaliacao = Avaliacao::where('ID_PRODUTO', '=', $prod->ID)
-                ->where('ID_USER', '=', $user->ID)->first();
+                ->where('ID_USER', '=', $user->ID)
+                ->first();
+
                 if($avaliacao == null || empty($avaliacao)){
                     $prod->AVALIACAO = 0;
                 }else{
@@ -171,7 +176,7 @@ class PedidosRepository implements PedidoInterface
                         $user = auth()->user();
 
                         FacadesNotification::route('mail', $user->EMAIL)
-                        ->notify(new EmailNotify($pedido, $FakeProducts));
+                        ->notify(new EmailNotify($pedido, $FakeProducts, false));
                     }
                     return response()->json(['message' => "Pedido Registrado com sucesso",
                     'pedido' => $pedido]);
@@ -214,7 +219,8 @@ class PedidosRepository implements PedidoInterface
                 $p->COR = $cor;
                 $produtos->push($p);
             }
-            return response()->json(['pedido' => $pedido, 'produtos' => $produtos]);
+            return response()->json(['pedido' => $pedido,
+            'produtos' => $produtos]);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],404);
         }
@@ -236,7 +242,17 @@ class PedidosRepository implements PedidoInterface
             $empresa = $user->empresa;
             $pedido = Pedidos::FindOrFail($id);
             $pedido->delete();
-            event(new MakeLog("Pedidos", "", "delete", "", "", $pedido->ID, $empresa->ID, $user->ID));
+
+            event(
+            new MakeLog("Pedidos",
+            "",
+            "delete",
+            "",
+            "",
+            $pedido->ID,
+            $empresa->ID,
+            $user->ID));
+
             return response()->json(['message' => "Deletado com sucesso !"]);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()]);
@@ -252,9 +268,12 @@ class PedidosRepository implements PedidoInterface
             foreach($request->produtos as $produto){
                 $helper->startTransaction();
                 $p = (object) $produto;
+
                 $itens_p = Pedido_Itens::where('ID_PEDIDO', $id)
                 ->where('ID_PRODUTO', $p->ID)
-                ->where('COR', '=', $p->COR)->first();
+                ->where('COR', '=', $p->COR)
+                ->first();
+
                 if($itens_p != null || !empty($itens_p)){
                    $tmp = $itens_p->QUANTIDADE;
                    $itens_p = $p->QUANTIDADE;
@@ -331,8 +350,8 @@ class PedidosRepository implements PedidoInterface
             $estoque = new EstoqueRepository();
             $ItensPedido = collect(new Pedido_Itens());
             $pedido = $this->pedido_factory($request, 0);
-            $request->PRODUTOS = json_decode($request->PRODUTOS);
-            foreach($request->PRODUTOS as $p){
+            $PRODUTOS = json_decode($request->PRODUTOS);
+            foreach($PRODUTOS as $p){
                 $produto = (object) $p;
                 $itens = new Pedido_Itens();
                 $itens->ID_PRODUTO = $produto->ID;
@@ -347,7 +366,10 @@ class PedidosRepository implements PedidoInterface
             $pedido->VALOR_TOTAL = $vlTotal;
             if($request->filled('ID_CUPOM')){
                 $pedido->ID_CUPOM = $request->ID_CUPOM;
-                $desconto = Cupom::where('ID', '=', $pedido->ID_CUPOM)->first();
+
+                $desconto = Cupom::where('ID', '=', $pedido->ID_CUPOM)
+                ->first();
+
                 $desconto = $desconto->DESCONTO;
                 $pedido->VALOR_TOTAL = $pedido->VALOR_TOTAL -
                 ((floatval($pedido->VALOR_TOTAL) * floatval($desconto)) / 100);
@@ -357,11 +379,15 @@ class PedidosRepository implements PedidoInterface
                 $item->ID_PEDIDO = $pedido->ID;
                 $item->save();
             }
+            $user = auth()->user();
+
+            FacadesNotification::route('mail', $user->EMAIL)
+            ->notify(new EmailNotify($pedido, $ItensPedido, true));
 
             return response()->json(['message' => 'Seu pedido foi registrado com sucesso !'
             ,'data' => $pedido->ID]);
         }catch(\Exception $e){
-            return response()->json(['message' => $e->getMessage()]);
+            return response()->json(['message' => $e->getMessage()],400);
         }
     }
 

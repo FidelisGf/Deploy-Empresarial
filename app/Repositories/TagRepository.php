@@ -40,7 +40,8 @@ class TagRepository implements TagInterface
                 $tag->NOME_REAL = $NOME_REAL;
                 $helper->startTransaction();
                 $tag->save();
-                event(new MakeLog("Produto/Tags", "", "insert", json_encode($tag), "", $tag->ID, $empresa->ID, $user->ID));
+                event(new MakeLog("Produto/Tags", "", "insert", json_encode($tag), "",
+                $tag->ID, $empresa->ID, $user->ID));
                 $helper->commit();
                 return $tag;
             }

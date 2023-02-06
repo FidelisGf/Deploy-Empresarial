@@ -14,7 +14,9 @@ class CupomRepository
     }
     public function getCupom(Request $request){
         try{
-            $cupom = Cupom::where('NOME', '=', $request->NOME)->first();
+            $cupom = Cupom::where('NOME', '=', $request->NOME)
+            ->first();
+
             if($cupom == null || empty($cupom)){
                 return response()->json(['message' => 'Cupom inválido'], 400);
             }else{

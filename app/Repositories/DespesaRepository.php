@@ -45,7 +45,11 @@ class DespesaRepository implements DespesaInterface
             $startData = date('Y-m-01');
             $endData = date('Y-m-t');
             $empresa = auth()->user()->empresa;
-            $valor = Despesa::where('ID_EMPRESA', $empresa->ID)->whereBetween('DATA', [$startData, $endData])->sum('CUSTO');
+
+            $valor = Despesa::where('ID_EMPRESA', $empresa->ID)
+            ->whereBetween('DATA', [$startData, $endData])
+            ->sum('CUSTO');
+
             return $valor;
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);
@@ -65,7 +69,8 @@ class DespesaRepository implements DespesaInterface
                 $despesa->DATA = Carbon::parse($request->DATA);
                 $despesa->ID_TAG = $request->ID_TAG;
                 $despesa->save();
-                event(new MakeLog("Despesas", "", "insert", "$despesa->DESC", "", $despesa->ID, $empresa->ID, $user->ID));
+                event(new MakeLog("Despesas", "", "insert", "$despesa->DESC",
+                "", $despesa->ID, $empresa->ID, $user->ID));
                 return $despesa;
             }
         }catch(\Exception $e){
@@ -76,7 +81,9 @@ class DespesaRepository implements DespesaInterface
         try{
             $user = auth()->user();
             $empresa = $user->empresa;
-            $despesa = Despesa::where('ID_EMPRESA', $empresa->ID)->where('ID_TAG', $id)->with([
+            $despesa = Despesa::where('ID_EMPRESA', $empresa->ID)
+            ->where('ID_TAG', $id)
+            ->with([
                 'Tags' => function($query){
                     $query->select('ID', 'NOME');
                 }
@@ -96,9 +103,12 @@ class DespesaRepository implements DespesaInterface
             if($request->filled('pdf')){
                 $despesas = DB::table('DESPESAS')
                 ->whereBetween('DATA', [$startData, $endData])
-                ->join('TAGS', 'TAGS.ID', '=', 'DESPESAS.ID_TAG')->select('DESPESAS.ID','DESPESAS.CUSTO','TAGS.NOME_REAL', 'DESPESAS.DATA')->get();
+                ->join('TAGS', 'TAGS.ID', '=', 'DESPESAS.ID_TAG')
+                ->select('DESPESAS.ID','DESPESAS.CUSTO','TAGS.NOME_REAL', 'DESPESAS.DATA')
+                ->get();
             }else{
-                $despesas = Despesa::whereBetween('DATA', [$startData, $endData])->where('ID_EMPRESA', $empresa->ID)
+                $despesas = Despesa::whereBetween('DATA', [$startData, $endData])
+                ->where('ID_EMPRESA', $empresa->ID)
                 ->with(['Tags' => function($query){
                     $query->select('ID', 'NOME');
                 }])->paginate(6);
@@ -115,8 +125,8 @@ class DespesaRepository implements DespesaInterface
     public function show($id)
     {
         try{
-            $user = auth()->user();
-            return Despesa::where('ID', $id)->with(['Tags' => function($query){
+            return Despesa::where('ID', $id)
+            ->with(['Tags' => function($query){
                 $query->select('ID', 'NOME');
             }])->firstOrFail();
 
@@ -140,7 +150,8 @@ class DespesaRepository implements DespesaInterface
                 $despesa->ID_TAG = $request->ID_TAG;
 
                 event(new MakeLog("Despesas", "", "update",
-                json_encode($despesa), json_encode($tmp), $despesa->ID, $empresa->ID, $user->ID));
+                json_encode($despesa), json_encode($tmp), $despesa->ID,
+                $empresa->ID, $user->ID));
 
                 $despesa->save();
                 return $despesa;
