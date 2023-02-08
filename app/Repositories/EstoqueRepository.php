@@ -248,7 +248,8 @@ class EstoqueRepository implements EstoqueInterface
                 $user = auth()->user();
                 $empresa = $user->empresa;
 
-                $PRODUCTS = DB::table("ESTOQUES")->where('ESTOQUES.EMPRESA_ID', '=', $empresa->ID)
+                $PRODUCTS = DB::table("ESTOQUES")
+                ->where('ESTOQUES.EMPRESA_ID', '=', $empresa->ID)
                 ->join('PRODUCTS', 'PRODUCTS.ID', '=', 'ESTOQUES.PRODUCT_ID')
                 ->select('PRODUCTS.ID', 'PRODUCTS.NOME', 'PRODUCTS.VALOR',
                 'ESTOQUES.QUANTIDADE', 'ESTOQUES.SAIDAS')

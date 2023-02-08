@@ -18,4 +18,6 @@ interface ProductInterface{
     public function descontaQuantidadeMaterial($id, $quantidade);
     public function countProducts();
     public function filterShop(Request $request);
+    public function getOneColorOfProduct($id);
+    public function getProdutosDestaques(Request $request);
 }

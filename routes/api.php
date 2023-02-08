@@ -38,151 +38,270 @@ use Illuminate\Support\Facades\Route;
 */
 
 
-Route::get('/showAvalibleRoles', [UsuarioController::class, 'showAvalibleRoles']);
-Route::get('/logout', [AuthController::class, 'logout']);
-Route::post('sendMailResetPassword', [ResetPwController::class, 'sendResetPwEmail']);
-Route::post('resetPassword', [ResetPwController::class, 'resetPassword']);
-Route::post('login', [AuthController::class, 'login']);
-Route::post('register', [AuthController::class, 'register']);
-Route::post('profile', [AuthController::class, 'profile']);
-Route::get('auth/validateTkn', [AuthController::class, 'getAuthenticatedUser']);
+
+Route::get('/logout', [AuthController::class,
+'logout']);
+
+Route::post('sendMailResetPassword', [ResetPwController::class,
+'sendResetPwEmail']);
+
+Route::post('resetPassword', [ResetPwController::class,
+'resetPassword']);
+
+Route::post('login', [AuthController::class,
+'login']);
+
+Route::post('register', [AuthController::class,
+'register']);
+
+Route::post('profile', [AuthController::class,
+'profile']);
+
+Route::get('auth/validateTkn', [AuthController::class,
+'getAuthenticatedUser']);
+
+
+
 
 Route::group(['middleware' => ['jwt.verify']], function() {
 
-    Route::get('refresh', [AuthController::class, 'refresh']);
 
-    Route::get('/findCategoryWithProductsIn', [CategoryController::class, 'findCategoryWithProductsIn']);
+    Route::get('refresh', [AuthController::class,
+    'refresh']);
 
-    Route::get('pedidoPorData', [PedidosController::class, 'pedidosPorPeriodo']);
-    Route::get('countProducts', [ProductController::class, 'countProducts']);
-    Route::post('/search', [ProductController::class, 'search']);
-    Route::post('/products/search', [ProductController::class, 'search']);
-    Route::get('/allByCategory/{id}', [ProductController::class, 'findAllProductByCategory']);
-    Route::get('/checaEmpUser', [UsuarioController::class, 'checkIfUserHasEmpresa'] );
+    Route::get('/showAvalibleRoles', [UsuarioController::class,
+    'showAvalibleRoles']);
 
-    Route::get('/profile', [UsuarioController::class, 'profile']);
-    Route::get('despesasByTag/{id}', [DespesaController::class, 'despesasByTag']);
-    Route::get('sumDespesasMensais', [DespesaController::class, 'sumDespesasMensais']);
-    Route::post('checkQuantidadeProduto', [PedidosController::class, 'checkQuantidadeProduto']);
-    Route::get('findLucroByProduto/{id}', [ProductController::class, 'findLucroByProduto']);
-    Route::put('adicionaQuantidadeMaterial/{id}', [MateriaisController::class, 'adicionaQuantidadeMaterial']);
-    Route::get('getVendasByDate', [VendaRepository::class, 'getVendasByTipoPagamento']);
-    Route::get('cupons', [CupomController::class, 'getCupom']);
-    Route::post('cupons', [CupomController::class, 'applyCupom']);
+    Route::get('/findCategoryWithProductsIn', [CategoryController::class,
+    'findCategoryWithProductsIn']);
+
+    Route::get('pedidoPorData', [PedidosController::class,
+     'pedidosPorPeriodo']);
+
+    Route::get('countProducts', [ProductController::class,
+     'countProducts']);
 
 
-    Route::post('/setConfigSite', [EmpresaController::class, 'setConfigSite']);
-    Route::post('/updateConfigSite', [EmpresaController::class, 'updateConfigSite']);
 
-    Route::post('/setConfig', [Config_GeneralController::class, 'setConfig'])
+    Route::get('/allByCategory/{id}', [ProductController::class,
+    'findAllProductByCategory']);
+
+    Route::get('/checaEmpUser', [UsuarioController::class,
+    'checkIfUserHasEmpresa'] );
+
+    Route::get('/profile', [UsuarioController::class,
+    'profile']);
+
+    Route::get('despesasByTag/{id}', [DespesaController::class,
+     'despesasByTag']);
+
+    Route::get('sumDespesasMensais', [DespesaController::class,
+    'sumDespesasMensais']);
+
+    Route::post('checkQuantidadeProduto', [PedidosController::class,
+    'checkQuantidadeProduto']);
+
+    Route::get('findLucroByProduto/{id}', [ProductController::class,
+    'findLucroByProduto']);
+
+    Route::put('adicionaQuantidadeMaterial/{id}', [MateriaisController::class,
+     'adicionaQuantidadeMaterial']);
+
+    Route::get('getVendasByDate', [VendaRepository::class,
+    'getVendasByTipoPagamento']);
+
+    Route::get('cupons', [CupomController::class,
+     'getCupom']);
+
+    Route::post('cupons', [CupomController::class,
+    'applyCupom']);
+
+    Route::post('/setConfigSite', [EmpresaController::class,
+    'setConfigSite']);
+
+    Route::post('/updateConfigSite', [EmpresaController::class,
+    'updateConfigSite']);
+
+    Route::post('/setConfig', [Config_GeneralController::class,
+     'setConfig'])
     ->middleware(FuncMiddleware::class);
 
-    Route::post('/getConfig', [Config_GeneralController::class, 'getConfig'])
+    Route::post('/getConfig', [Config_GeneralController::class,
+    'getConfig'])
     ->middleware(FuncMiddleware::class);
 
-    Route::post('/vincularUserEmpresa', [UsuarioController::class, 'vinculaUsuarioEmpresa'])
+    Route::post('/vincularUserEmpresa', [UsuarioController::class,
+    'vinculaUsuarioEmpresa'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/empresaPorUsuario', [UsuarioController::class, 'getEmpresaByUser'])
+    Route::get('/empresaPorUsuario', [UsuarioController::class,
+     'getEmpresaByUser'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getVendasPorDia', [VendaController::class, 'getVendasPorDia'])
+    Route::get('/getVendasPorDia', [VendaController::class,
+    'getVendasPorDia'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get("/getLucroAndGastos", [VendaController::class, 'getLucroAndGastos'])
+    Route::get("/getLucroAndGastos", [VendaController::class,
+    'getLucroAndGastos'])
     ->middleware(FuncMiddleware::class);
 
     Route::get('/getTotalVendasUltimosTresMeses', [VendaController::class,
     'getTotalVendasInTheLastThreeMonths'])
     ->middleware(FuncMiddleware::class);
 
-    Route::post('/addEstoque', [EstoqueController::class, 'addEstoque'])
+    Route::post('/addEstoque', [EstoqueController::class,
+    'addEstoque'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/pedidos/{id}', [PedidosController::class, 'show'])
+    Route::get('/pedidos/{id}', [PedidosController::class,
+    'show'])
     ->middleware(FuncMiddleware::class);
 
-    Route::put('/pedidos/{id}', [PedidosController::class, 'update'])
+    Route::put('/pedidos/{id}', [PedidosController::class,
+    'update'])
     ->middleware(FuncMiddleware::class);
 
-    Route::delete('/products/{id}', [ProductController::class, 'destroy'])
+    Route::delete('/products/{id}', [ProductController::class,
+    'destroy'])
     ->middleware(FuncMiddleware::class);
 
-    Route::put('/products/{id}', [ProductController::class, 'update'])
+    Route::put('/products/{id}', [ProductController::class,
+    'update'])
     ->middleware(FuncMiddleware::class);
 
-    Route::put('aprovarPedido/{id}', [PedidosController::class, 'aprovarPedido'])
+    Route::put('aprovarPedido/{id}', [PedidosController::class,
+    'aprovarPedido'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getActiveUsers', [UsuarioController::class, 'getActiveUsers'])
+    Route::get('/getActiveUsers', [UsuarioController::class,
+    'getActiveUsers'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getPenalidades/{id}', [UsuarioController::class, 'getPenalidades'])
+    Route::get('/getPenalidades/{id}', [UsuarioController::class,
+    'getPenalidades'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getVendasByUser/{id}', [UsuarioController::class, 'getVendasByUser'])
+    Route::get('/getVendasByUser/{id}', [UsuarioController::class,
+    'getVendasByUser'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getUserMediaVendasByAno/{id}', [UsuarioController::class, 'getUserMediaVendasByAno'])
+    Route::get('/getUserMediaVendasByAno/{id}', [UsuarioController::class,
+    'getUserMediaVendasByAno'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getUserTotalVendasByMes/{id}', [UsuarioController::class, 'getUserTotalVendasByMes'])
+    Route::get('/getUserTotalVendasByMes/{id}', [UsuarioController::class,
+    'getUserTotalVendasByMes'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/getHistoricoSalarioUser/{id}', [UsuarioController::class, 'getHistoricoSalarioUser'])
+    Route::get('/getHistoricoSalarioUser/{id}', [UsuarioController::class,
+    'getHistoricoSalarioUser'])
     ->middleware(FuncMiddleware::class);
 
-    Route::post('/getFolhaSalarioUsers', [UsuarioController::class, 'getFolhaSalarioUsers'])
+    Route::post('/getFolhaSalarioUsers', [UsuarioController::class,
+    'getFolhaSalarioUsers'])
     ->middleware(FuncMiddleware::class);
-    Route::get('/getDescontoMensalByUser/{id}', [PenalidadeController::class, 'getDescontoMensalByUser'])
-    ->middleware(FuncMiddleware::class);
-
-    Route::post('/setAjustes', [ConfigFolhaController::class, 'setAjustes'])
-    ->middleware(FuncMiddleware::class);
-
-    Route::post('/makeWagePayment', [UsuarioController::class, 'makeWagePayment'])
+    Route::get('/getDescontoMensalByUser/{id}', [PenalidadeController::class,
+    'getDescontoMensalByUser'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/showAjuste', [ConfigFolhaController::class , 'showAjuste'])
+    Route::post('/setAjustes', [ConfigFolhaController::class,
+    'setAjustes'])
     ->middleware(FuncMiddleware::class);
 
-    Route::post('/checkIfWageWasPayed', [UsuarioController::class, 'checkIfWageWasPayed'])
+    Route::post('/makeWagePayment', [UsuarioController::class,
+    'makeWagePayment'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::get('/showAjuste', [ConfigFolhaController::class ,
+    'showAjuste'])
+    ->middleware(FuncMiddleware::class);
+
+    Route::post('/checkIfWageWasPayed', [UsuarioController::class,
+    'checkIfWageWasPayed'])
     ->middleware(FuncMiddleware::class);
 
     Route::get('/getCompleteHistoryPenalidades/{id}', [UsuarioController::class,
     'getCompleteHistoryPenalidades'])
     ->middleware(FuncMiddleware::class);
 
-    Route::get('/usuarios/{id}', [UsuarioController::class, 'show']);
-    Route::get('/getProdutosFromPedidos/{id}', [PedidosController::class, 'getProdutosFromPedidos']);
+    Route::get('/usuarios/{id}', [UsuarioController::class,
+    'show']);
 
-    Route::get('/checkIfPassword', [UsuarioController::class, 'checkIfPassword']);
-    Route::post('/pedidosInternet', [PedidosController::class, 'storeInternetPedidos']);
-    Route::get('/getPerfilUserInternet', [UsuarioController::class, 'getPerfilUserInternet']);
-    Route::post('/usuariosUp', [UsuarioController::class, 'updateUser']);
-    Route::get('/getOneColorOfProduct/{id}', [ProductController::class, 'getOneColorOfProduct']);
+    Route::get('/getProdutosFromPedidos/{id}', [PedidosController::class,
+    'getProdutosFromPedidos']);
+
+    Route::get('/checkIfPassword', [UsuarioController::class,
+    'checkIfPassword']);
+
+    Route::post('/pedidosInternet', [PedidosController::class,
+    'storeInternetPedidos']);
+
+    Route::get('/getPerfilUserInternet', [UsuarioController::class,
+    'getPerfilUserInternet']);
+
+    Route::post('/usuariosUp', [UsuarioController::class,
+    'updateUser']);
+
+    Route::get('/getOneColorOfProduct/{id}', [ProductController::class,
+    'getOneColorOfProduct']);
 
 
     Route::resource('materiais', 'MateriaisController');
+
     Route::resource('medidas', 'MedidasController');
+
     Route::resource('despesas', 'DespesaController');
+
     Route::resource('tags', 'TagController');
+
     Route::resource('clientes', 'ClienteController');
+
     Route::resource('cores', 'CorController');
+
     Route::resource('avaliacoes', 'AvaliacaoController');
-    Route::resource('vendas', 'VendaController')->middleware(FuncMiddleware::class);
-    Route::resource('pagamentos', 'Pagamento_SalarioController')->middleware(FuncMiddleware::class);
-    Route::resource('pedidos', 'PedidosController')->except(['show', 'update']);
+
+    Route::resource('vendas', 'VendaController')
+    ->middleware(FuncMiddleware::class);
+
+    Route::resource('pagamentos', 'Pagamento_SalarioController')
+    ->middleware(FuncMiddleware::class);
+
+    Route::resource('pedidos', 'PedidosController')
+    ->except(['show', 'update']);
+
     Route::resource('empresas', 'EmpresaController');
+
     Route::resource('estoques', 'EstoqueController');
-    Route::resource('usuarios', 'UsuarioController')->except(['show', 'update']);
-    Route::resource('penalidades', 'PenalidadeController')->middleware(FuncMiddleware::class);
+
+    Route::resource('usuarios', 'UsuarioController')
+    ->except(['show', 'update']);
+
+    Route::resource('penalidades', 'PenalidadeController')
+    ->middleware(FuncMiddleware::class);
 
 });
-Route::resource('categorys', 'CategoryController');
-Route::resource('products', 'ProductController')->except(['destroy']);
-Route::get('getQuantidadeProduct/{id}', [EstoqueController::class, 'getQuantidadeProduct']);
-Route::get('produtosDestaques', [ProductController::class, 'getProdutosDestaques']);
-Route::get('/getConfigSite', [EmpresaController::class, 'getConfigSite']);
-Route::get('/getEmpresaFromUser', [EmpresaController::class, 'getEmpresaFromUser']);
-Route::get('/getTema', [Tema_EmpresaController::class, 'show']);
+
+
+
+Route::resource('categorys',
+'CategoryController');
+
+Route::resource('products',
+'ProductController')
+->except(['destroy']);
+
+Route::get('getQuantidadeProduct/{id}', [EstoqueController::class,
+'getQuantidadeProduct']);
+
+Route::get('produtosDestaques', [ProductController::class,
+'getProdutosDestaques']);
+
+Route::get('/getConfigSite', [EmpresaController::class,
+'getConfigSite']);
+
+Route::get('/getEmpresaFromUser', [EmpresaController::class,
+'getEmpresaFromUser']);
+
+Route::get('/getTema', [Tema_EmpresaController::class,
+'show']);

@@ -3,40 +3,27 @@
 namespace App\Repositories;
 
 use App\Avaliacao;
-use App\Cliente;
 use App\Config_General;
 use App\Cupom;
 use App\Estoque;
 use App\Events\MakeLog;
-use App\Events\VendaGerada;
 use App\FakeProduct;
 use App\Http\Controllers\Help;
 use App\Http\interfaces\PedidoInterface;
-use App\Http\Requests\StoreEstoqueValidator;
 use App\Http\Requests\StorePedidoValidator;
 use App\Http\Resources\FakeProduct as ResourcesFakeProduct;
-use App\Mail\SendMailUser;
 use App\Notifications\EmailNotify;
 use App\Pedido_Itens;
 use App\Pedidos;
 use App\Product;
-use App\Venda;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
-use Illuminate\Notifications\Notification;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
 
-use function Deployer\select;
 
 class PedidosRepository implements PedidoInterface
 {
-    private $model;
-    public function __construct(Pedidos $model)
-    {
-        $this->model = $model;
-    }
     public function pedido_factory(Request $request, $id){
         $user = auth()->user();
         $empresa = $user->empresa;
@@ -317,9 +304,11 @@ class PedidosRepository implements PedidoInterface
                 $startData = Carbon::parse($request->start);
                 $endData = Carbon::parse($request->end);
 
-                $Pedidos = Pedidos::whereBetween('CREATED_AT', [$startData, $endData])
+                $Pedidos = Pedidos::whereBetween('CREATED_AT', [$startData,
+                $endData])
                 ->where('ID_EMPRESA', $empresa->ID)
-                ->select('ID', 'METODO_PAGAMENTO', 'VALOR_TOTAL', 'APROVADO', 'CREATED_AT')
+                ->select('ID', 'METODO_PAGAMENTO', 'VALOR_TOTAL',
+                'APROVADO', 'CREATED_AT')
                 ->get();
 
                 foreach($Pedidos as $p){
@@ -333,7 +322,8 @@ class PedidosRepository implements PedidoInterface
                 $endData = Carbon::parse($request->end);
                 $tmp = null;
 
-                $Pedidos = Pedidos::whereBetween('CREATED_AT', [$startData, $endData])
+                $Pedidos = Pedidos::whereBetween('CREATED_AT',
+                [$startData, $endData])
                 ->where('ID_EMPRESA', $empresa->ID)
                 ->paginate(6);
 
@@ -360,7 +350,8 @@ class PedidosRepository implements PedidoInterface
                 $itens->COR = $produto->COR;
                 $ItensPedido->push($itens);
                 $vlTotal += $produto->VALOR * $produto->QUANTIDADE;
-                $estoque->removeEstoque($produto->ID, $produto->QUANTIDADE, $itens->COR);
+                $estoque->removeEstoque($produto->ID,
+                $produto->QUANTIDADE, $itens->COR);
             }
             $pedido->INTERNET = 'T';
             $pedido->VALOR_TOTAL = $vlTotal;
@@ -380,11 +371,11 @@ class PedidosRepository implements PedidoInterface
                 $item->save();
             }
             $user = auth()->user();
-
             FacadesNotification::route('mail', $user->EMAIL)
             ->notify(new EmailNotify($pedido, $ItensPedido, true));
 
-            return response()->json(['message' => 'Seu pedido foi registrado com sucesso !'
+            return response()->json(['message' =>
+            'Seu pedido foi registrado com sucesso !'
             ,'data' => $pedido->ID]);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);

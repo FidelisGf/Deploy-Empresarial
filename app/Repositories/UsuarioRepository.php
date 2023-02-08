@@ -2,11 +2,9 @@
 
 namespace App\Repositories;
 
-use App\Config_General;
 use App\Empresa;
 use App\Historico_Penalidade;
 use App\Http\interfaces\UsuarioInterface;
-use App\Http\Requests\RegisterAuthValidator;
 use App\Http\Requests\RegisterEmployeeValidator;
 use App\Http\Requests\StoreEmpresaValidator;
 use App\Pagamento_Salario;
@@ -15,13 +13,9 @@ use App\Penalidade;
 use App\Role;
 use App\Usuario;
 use Carbon\Carbon;
-use DateTime;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Validator;
-use PhpParser\Node\Expr\FuncCall;
-use PhpParser\Node\Stmt\UseUse;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
 class UsuarioRepository implements UsuarioInterface
@@ -33,11 +27,16 @@ class UsuarioRepository implements UsuarioInterface
     public function index(){
         try{
             $empresa = auth()->user()->empresa->ID;
-            $usuarios = Usuario::where('EMPRESA_ID', $empresa)->with([
+
+            $usuarios = Usuario::where('EMPRESA_ID', $empresa)
+            ->with([
                 'role' => function($query){
                     $query->select('ID', 'NOME');
                 }
-            ])->where('ID_ROLE', '!=', 1)->where('ID_ROLE', '!=', 4)->paginate(15);
+            ])->where('ID_ROLE', '!=', 1)
+            ->where('ID_ROLE', '!=', 4)
+            ->paginate(15);
+
             return $usuarios;
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()]);
@@ -49,7 +48,10 @@ class UsuarioRepository implements UsuarioInterface
             if($validator){
                 $Empresa = Empresa::create($request->all());
                 if($Empresa){
-                    $auth = JWTAuth::parseToken()->authenticate();
+
+                    $auth = JWTAuth::parseToken()
+                    ->authenticate();
+
                     $USER = $auth;
                     $USER->EMPRESA_ID = $Empresa->ID;
                     if($USER->save()){
@@ -105,8 +107,14 @@ class UsuarioRepository implements UsuarioInterface
             try{
                 $user = auth()->user();
                 $user->IMAGE = "data:image/png;base64,$user->IMAGE";
-                $pRealizados = Pedidos::where('ID_USER', $user->ID)->count();
-                $pPagos = Pedidos::where('ID_USER', $user->ID)->where('DT_PAGAMENTO', '!=', null)->count();
+
+                $pRealizados = Pedidos::where('ID_USER', $user->ID)
+                ->count();
+
+                $pPagos = Pedidos::where('ID_USER', $user->ID)
+                ->where('DT_PAGAMENTO', '!=', null)
+                ->count();
+
                 $user->pPagos = $pPagos;
                 $user->pRealizados = $pRealizados;
                 return $user;
@@ -158,7 +166,10 @@ class UsuarioRepository implements UsuarioInterface
             $penaliades = $user->penalidades()
             ->withTrashed()->get();
             foreach($penaliades as $p){
-                $historico = Historico_Penalidade::where('ID_PENALIDADE', $p->ID)->first();
+
+                $historico = Historico_Penalidade::where('ID_PENALIDADE', $p->ID)
+                ->first();
+
                 $p->ORIGINAL = $historico->VALOR_ORIGINAL;
                 $valor += $p->ORIGINAL;
             }
@@ -444,9 +455,11 @@ class UsuarioRepository implements UsuarioInterface
                                     if($request->FLAG == true){
                                         // true significa que não é pagamento adiantamento,
                                         //então é descontado inteiro
-                                        $p->DESCONTO -= $historico->VALOR_ORIGINAL;
+                                        $p->DESCONTO -=
+                                        $historico->VALOR_ORIGINAL;
                                     }else{
-                                        $p->DESCONTO -= ($historico->VALOR_ORIGINAL * 60) / 100;
+                                        $p->DESCONTO -=
+                                        ($historico->VALOR_ORIGINAL * 60) / 100;
                                     }
                                     $p->save();
                                 }
@@ -470,7 +483,8 @@ class UsuarioRepository implements UsuarioInterface
             $pagamentoSalario->DATA = now()->format('Y-m-d H:i');
             $pagamentoSalario->save();
 
-            return response()->json(['message' => 'Pagamento Registrado com sucesso !',
+            return response()->json(['message' => 'Pagamento Registrado
+            com sucesso !',
             'data' => $salarios, 'totalPago' => $totalPago]);
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],400);
@@ -482,10 +496,13 @@ class UsuarioRepository implements UsuarioInterface
             $flag = false;
             $empresa = auth()->user()->empresa;
             $dtAtual = now()->format("m");
+
             $salariosPagos = Pagamento_Salario::where('ID_EMPRESA', $empresa->ID)
             ->where('TIPO', $request->TIPO)
-            ->selectRaw('extract (MONTH from PAGAMENTOS_SALARIOS.DATA) as mes_pagamento')
+            ->selectRaw('extract (MONTH from PAGAMENTOS_SALARIOS.DATA)
+            as mes_pagamento')
             ->get();
+
             foreach($salariosPagos as $s){
                if($s->MES_PAGAMENTO == $dtAtual){
                     $flag = true;

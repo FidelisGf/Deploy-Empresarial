@@ -43,7 +43,8 @@ class VendaRepository implements VendaInterface
             $empresa = $user->empresa;
             $startData =  date_create('today');
             $endData = date_create('today 23:00');
-            $vendas = DB::table('VENDAS')->join('PEDIDOS', function ($joins) use($empresa){
+            $vendas = DB::table('VENDAS')
+            ->join('PEDIDOS', function ($joins) use($empresa){
                 $joins->on('VENDAS.ID_PEDIDO', '=', 'PEDIDOS.ID')
                 ->where('VENDAS.ID_EMPRESA', '=', $empresa->ID);
             })->whereBetween('PEDIDOS.DT_PAGAMENTO', [$startData, $endData])
@@ -146,11 +147,6 @@ class VendaRepository implements VendaInterface
         try{
             $startData = Carbon::parse($request->start);
             $endData = Carbon::parse($request->end);
-            $vlPix = 0;
-            $vlDinheiro = 0;
-            $vlCartao = 0;
-            $vlTotal = 0;
-            $vlReal = 0;
             $user = auth()->user();
             $empresa = $user->empresa;
 
@@ -177,10 +173,11 @@ class VendaRepository implements VendaInterface
             $hoje = strval(60 + $hoje);
             $dateIni = date_create("-$hoje days")->format('Y-m-d H:i');
 
-            $meses = DB::table('PEDIDOS')->where('PEDIDOS.DT_PAGAMENTO', '!=', null)->
-            whereBetween('PEDIDOS.DT_PAGAMENTO', [$dateIni, $date])
-            ->select(DB::raw('extract (MONTH from PEDIDOS.DT_PAGAMENTO) as mes, sum(PEDIDOS.VALOR_TOTAL)
-            as valores'))
+            $meses = DB::table('PEDIDOS')
+            ->where('PEDIDOS.DT_PAGAMENTO', '!=', null)
+            ->whereBetween('PEDIDOS.DT_PAGAMENTO', [$dateIni, $date])
+            ->select(DB::raw('extract (MONTH from PEDIDOS.DT_PAGAMENTO) as mes,
+            sum(PEDIDOS.VALOR_TOTAL) as valores'))
             ->groupBy(DB::raw('mes'))
             ->get();
 
