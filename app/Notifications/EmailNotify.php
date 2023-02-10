@@ -26,7 +26,8 @@ class EmailNotify extends Notification implements ShouldQueue
         if($bool){
             foreach($FakeProducts as $f){
                 $qntd = $f->QUANTIDADE;
-                $f = Product::FindOrFail($f->ID_PRODUTO);
+                $f = Product::where('ID', '=', $f->ID_PRODUTO)->
+                select('ID','NOME','VALOR')->first();
                 $f->QUANTIDADE = $qntd;
             }
             $this->FakeProducts = $FakeProducts;

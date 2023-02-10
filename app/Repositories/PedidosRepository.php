@@ -357,10 +357,8 @@ class PedidosRepository implements PedidoInterface
             $pedido->VALOR_TOTAL = $vlTotal;
             if($request->filled('ID_CUPOM')){
                 $pedido->ID_CUPOM = $request->ID_CUPOM;
-
                 $desconto = Cupom::where('ID', '=', $pedido->ID_CUPOM)
                 ->first();
-
                 $desconto = $desconto->DESCONTO;
                 $pedido->VALOR_TOTAL = $pedido->VALOR_TOTAL -
                 ((floatval($pedido->VALOR_TOTAL) * floatval($desconto)) / 100);

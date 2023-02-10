@@ -44,9 +44,9 @@ class Tema_EmpresaController extends Controller
      * @param  int  $id
      * @return \Illuminate\Http\Response
      */
-    public function show(TemaEmpresaRepository $temaEmpresaRepository)
+    public function show(TemaEmpresaRepository $temaEmpresaRepository, Request $request)
     {
-        return $temaEmpresaRepository->show();
+        return $temaEmpresaRepository->show($request);
     }
 
     /**

@@ -233,9 +233,9 @@ class UsuarioRepository implements UsuarioInterface
     public function show($id){
         try{
             $monthStart = date('01-M-Y');
-            //$monthStart = Carbon::parse($monthStart);
+            $monthStart = Carbon::parse($monthStart);
             $monthFinal = date('31-M-Y');
-            //$monthFinal = Carbon::parse($monthFinal);
+            $monthFinal = Carbon::parse($monthFinal);
             $valorTotalVendas = 0;
             $usuario = Usuario::FindOrFail($id);
 
@@ -254,6 +254,8 @@ class UsuarioRepository implements UsuarioInterface
             ->count();
             $usuario = $usuario->only('ID', 'NAME', 'EMAIL', 'CPF',
             'CREATED_AT', 'UPDATED_AT', 'SALARIO', 'ID_ROLE', 'IMAGE');
+
+
 
             return response()->json(['usuario' => $usuario, 'qntdVendas' => $qntdVendas, 'qntdPenalidades'
             =>$qntdPenalidades, 'totalVendido' => $valorTotalVendas, 'cargo' => $cargo],200);

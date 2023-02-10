@@ -7,21 +7,30 @@ use App\Tema_Empresa;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class TemaEmpresaRepository implements TemaEmpresaInterface
+class TemaEmpresaRepository
 {
     public function __construct()
     {
         //
     }
 
-    public function show(){
-        $ID = DB::table('INTERNET')
-        ->select('INTERNET.ID_EMPRESA')
-        ->where('INTERNET.STATUS', '=', 1)
-        ->first();
-        $ID = $ID->ID_EMPRESA;
-        $cores = Tema_Empresa::where('ID_EMPRESA', '=', $ID)->first();
-        return response()->json($cores);
+    public function show(Request $request){
+        try{
+            if($request->has('Shop')){
+                $ID = DB::table('INTERNET')
+                ->select('INTERNET.ID_EMPRESA')
+                ->where('INTERNET.STATUS', '=', 1)
+                ->first();
+                $ID = $ID->ID_EMPRESA;
+            }else{
+                $ID = auth()->user()->empresa->ID;
+            }
+            $cores = Tema_Empresa::where('ID_EMPRESA', '=', $ID)->first();
+            return response()->json($cores);
+        }catch(\Exception $e){
+            return response()->json(['message' => $e->getMessage()]);
+        }
+
     }
     public function setTema(Request $request){
         try{
