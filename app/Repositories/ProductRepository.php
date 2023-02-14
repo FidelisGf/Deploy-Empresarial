@@ -352,10 +352,21 @@ class ProductRepository implements InterfacesProductInterface
     }
     public function getOneColorOfProduct($id){ // usado para pegar a cor padrão de um item
         try{
-            $cor = DB::table('CORES_PRODUTOS')
-            ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $id)
-            ->join('CORES', 'CORES.ID' , '=', 'CORES_PRODUTOS.ID_COR')
+            // $cor = DB::table('CORES_PRODUTOS')
+            // ->where('CORES_PRODUTOS.ID_PRODUTO', '=', $id)
+            // ->join('CORES', 'CORES.ID' , '=', 'CORES_PRODUTOS.ID_COR')
+            // ->join('ESTOQUES', 'ESTOQUES.COR', '=', 'CORES.HASH')
+            // ->where('ESTOQUES.QUANTIDADE', '>=', 1)
+            // ->get();
+
+            $cor = Cor_Produtos::where('ID_PRODUTO', '=', $id)
+            ->join('CORES', 'CORES.ID', '=', 'ID_COR')
+            ->join('ESTOQUES', 'ESTOQUES.COR', '=', 'CORES.HASH')
+            ->where('ESTOQUES.QUANTIDADE', '>=', 1)
+            ->distinct('CORES.ID')
+            ->select('CORES.HASH')
             ->get();
+
             return $cor;
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()]);
