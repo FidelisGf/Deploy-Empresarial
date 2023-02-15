@@ -95,15 +95,15 @@ class AuthController extends Controller
     public function getAuthenticatedUser()
             {
                 try {
-                    if (! $user = JWTAuth::parseToken()->authenticate()) {
+                    if (!auth()->user()) {
                         return response()->json('user_not_found', 401);
                     }else{
                         return response()->json(['message' => 'sucess'],200);
                     }
-                }catch (TokenInvalidException $e) {
+                }catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
                     return response()->json('token_invalid', 401);
                 }
-                catch (TokenExpiredException $e) {
+                catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
                     $token = auth()->guard('api')
                     ->refresh();
                     return response()->json($token, 401);

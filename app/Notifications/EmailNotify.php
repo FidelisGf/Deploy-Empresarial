@@ -13,27 +13,16 @@ class EmailNotify extends Notification implements ShouldQueue
     use Queueable;
     private $pedido;
     private $FakeProducts;
-    private $bool;
 
     /**
      * Create a new notification instance.
      *
      * @return void
      */
-    public function __construct($pedido, $FakeProducts, $bool)
+    public function __construct($pedido, $FakeProducts)
     {
         $this->pedido = $pedido;
-        if($bool){
-            foreach($FakeProducts as $f){
-                $qntd = $f->QUANTIDADE;
-                $f = Product::where('ID', '=', $f->ID_PRODUTO)->
-                select('ID','NOME','VALOR')->first();
-                $f->QUANTIDADE = $qntd;
-            }
-            $this->FakeProducts = $FakeProducts;
-        }else{
-            $this->FakeProducts = $FakeProducts;
-        }
+        $this->FakeProducts = $FakeProducts;
     }
 
     /**

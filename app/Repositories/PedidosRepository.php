@@ -163,7 +163,7 @@ class PedidosRepository implements PedidoInterface
                         $user = auth()->user();
 
                         FacadesNotification::route('mail', $user->EMAIL)
-                        ->notify(new EmailNotify($pedido, $FakeProducts, false));
+                        ->notify(new EmailNotify($pedido, $FakeProducts));
                     }
                     return response()->json(['message' => "Pedido Registrado com sucesso",
                     'pedido' => $pedido]);
@@ -336,12 +336,15 @@ class PedidosRepository implements PedidoInterface
 
     public function storeInternetPedidos(Request $request){
         try{
+            $helper = new Help();
+            $helper->startTransaction();
             $vlTotal = 0;
             $estoque = new EstoqueRepository();
             $ItensPedido = collect(new Pedido_Itens());
             $pedido = $this->pedido_factory($request, 0);
             $PRODUTOS = json_decode($request->PRODUTOS);
             foreach($PRODUTOS as $p){
+
                 $produto = (object) $p;
                 $itens = new Pedido_Itens();
                 $itens->ID_PRODUTO = $produto->ID;
@@ -368,14 +371,12 @@ class PedidosRepository implements PedidoInterface
                 $item->ID_PEDIDO = $pedido->ID;
                 $item->save();
             }
-            $user = auth()->user();
-            FacadesNotification::route('mail', $user->EMAIL)
-            ->notify(new EmailNotify($pedido, $ItensPedido, true));
-
+            $helper->commit();
             return response()->json(['message' =>
             'Seu pedido foi registrado com sucesso !'
             ,'data' => $pedido->ID]);
         }catch(\Exception $e){
+            $helper->rollbackTransaction();
             return response()->json(['message' => $e->getMessage()],400);
         }
     }

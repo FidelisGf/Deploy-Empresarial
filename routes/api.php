@@ -243,8 +243,7 @@ Route::group(['middleware' => ['jwt.verify']], function() {
     Route::post('/usuariosUp', [UsuarioController::class,
     'updateUser']);
 
-    Route::get('/getOneColorOfProduct/{id}', [ProductController::class,
-    'getOneColorOfProduct']);
+
 
 
     Route::resource('materiais', 'MateriaisController');
@@ -282,7 +281,8 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 
 });
 
-
+Route::get('/getOneColorOfProduct/{id}', [ProductController::class,
+'getOneColorOfProduct']);
 
 Route::resource('categorys',
 'CategoryController');
