@@ -38,39 +38,13 @@ class TemaEmpresaRepository
             $tema_empresa = Tema_Empresa::where('ID_EMPRESA', $id)->first();
             if($request->has('CORES')){
                 $CORES = json_decode($request->CORES);
+                $CAMPOS = ['PRIMARIA', 'SECUNDARIA', 'NAVBAR', 'FILTROS', 'FOOTER'];
                 if(empty($tema_empresa) || $tema_empresa == null){
                     $tema_empresa = new Tema_Empresa();
                 }
-                if(array_key_exists(0, $CORES)){
-                    if(!empty($CORES[0]))
-                        $tema_empresa->PRIMARIA = $CORES[0];
-                }
-                if(array_key_exists(1, $CORES)){
-                    if(!empty($CORES[1]))
-                        $tema_empresa->SECUNDARIA = $CORES[1];
-                }
-                if(array_key_exists(2, $CORES)){
-                    if(!empty($CORES[2]))
-                        $tema_empresa->NAVBAR = $CORES[2];
-                }
-                if(array_key_exists(3, $CORES)){
-                    if(!empty($CORES[3]))
-                        $tema_empresa->FILTROS = $CORES[3];
-                }
-
-                if(array_key_exists(4, $CORES)){
-                    if(!empty($CORES[4]))
-                        $tema_empresa->FOOTER = $CORES[4];
-                }
-
-                if(array_key_exists(5, $CORES)){
-                    if(!empty($CORES[5]))
-                        $tema_empresa->CARDS_PERFIL = $CORES[5];
-                }
-
-                if(array_key_exists(6, $CORES)){
-                    if(!empty($CORES[6]))
-                        $tema_empresa->CARD_PEDIDOS = $CORES[6];
+                for($i = 0; $i < sizeof($CAMPOS); $i++){
+                    $campo = (string) $CAMPOS[$i];
+                    $tema_empresa[$campo] = $CORES[$i];
                 }
                 $tema_empresa->save();
                 return response()->json(['message' => 'Editado com sucesso !']);
@@ -78,6 +52,5 @@ class TemaEmpresaRepository
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()], 400);
         }
-
     }
 }
