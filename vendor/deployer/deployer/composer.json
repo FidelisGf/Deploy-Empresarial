@@ -1,0 +1,32 @@
+{
+  "name": "deployer/deployer",
+  "description": "Deployment Tool",
+  "license": "MIT",
+  "homepage": "https://deployer.org",
+  "support": {
+    "docs": "https://deployer.org/docs",
+    "source": "https://github.com/deployphp/deployer",
+    "issues": "https://github.com/deployphp/deployer/issues"
+  },
+  "authors": [
+    {
+      "name": "Anton Medvedev",
+      "email": "anton@medv.io"
+    }
+  ],
+  "funding": [
+    {
+      "type": "github",
+      "url": "https://github.com/sponsors/antonmedv"
+    }
+  ],
+  "bin": "dep",
+  "config": {
+    "sort-packages": true,
+    "process-timeout": 0,
+    "allow-plugins": {
+      "pestphp/pest-plugin": true,
+      "dealerdirect/phpcodesniffer-composer-installer": true
+    }
+  }
+}
