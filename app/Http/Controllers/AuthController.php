@@ -81,12 +81,14 @@ class AuthController extends Controller
                 if(Hash::check($request->PASSWORD, $Usuario->PASSWORD )){
                     if ($token = auth()->guard('api')->login($Usuario)) {
                         return $this->respondWithToken($token);
+                    }else{
+                        return response()->json(['message' => 'Erro no Login !'], 401);
                     }
                 }else{
-                    return response()->json(['message' => 'Senha Não confere !'],400);
+                    return response()->json(['message' => 'Senha Não confere !'],401);
                 }
             }else{
-                return response()->json(['message' => 'Usuario Não encontrado !'],404);
+                return response()->json(['message' => 'Usuario Não encontrado !'],401);
              }
         }catch(\Exception $e){
             return response()->json(['message' => $e->getMessage()],404);
@@ -100,10 +102,10 @@ class AuthController extends Controller
                     }else{
                         return response()->json(['message' => 'sucess'],200);
                     }
-                }catch (\Tymon\JWTAuth\Exceptions\TokenInvalidException $e) {
+                }catch (TokenInvalidException $e) {
                     return response()->json('token_invalid', 401);
                 }
-                catch (\Tymon\JWTAuth\Exceptions\TokenExpiredException $e) {
+                catch (TokenExpiredException $e) {
                     $token = auth()->guard('api')
                     ->refresh();
                     return response()->json($token, 401);
