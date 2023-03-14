@@ -9,7 +9,6 @@ use App\Estoque;
 use App\Events\MakeLog;
 use App\FakeProduct;
 use App\Http\Controllers\Help;
-use App\Http\interfaces\PedidoInterface;
 use App\Http\Requests\StorePedidoValidator;
 use App\Http\Resources\FakeProduct as ResourcesFakeProduct;
 use App\Notifications\EmailNotify;
@@ -22,7 +21,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Notification as FacadesNotification;
 
 
-class PedidosRepository implements PedidoInterface
+class PedidosRepository
 {
     public function pedido_factory(Request $request, $id){
         $user = auth()->user();

@@ -3,10 +3,9 @@
 namespace App\Repositories;
 
 use App\Avaliacao;
-use App\Http\interfaces\AvaliacaoInterface;
 use Illuminate\Http\Request;
 
-class AvaliacaoRepository implements AvaliacaoInterface
+class AvaliacaoRepository
 {
     public function __construct()
     {

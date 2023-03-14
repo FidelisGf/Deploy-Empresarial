@@ -3,12 +3,11 @@
 namespace App\Repositories;
 
 use App\Empresa;
-use App\Http\interfaces\EmpresaInterface;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
-class EmpresaRepository implements EmpresaInterface
+class EmpresaRepository
 {
     public function __construct()
     {

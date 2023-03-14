@@ -3,12 +3,11 @@
 namespace App\Repositories;
 
 use App\Events\MakeLog;
-use App\Http\interfaces\MateriaisInterface;
 use App\Http\Requests\StoreMateriaisValidator;
 use App\Http\Requests\StoreQuantidadeMateriaisValidator;
 use App\Materiais;
 use Illuminate\Http\Request;
-class MateriaisRepository implements MateriaisInterface
+class MateriaisRepository
 {
 
     public function __construct()

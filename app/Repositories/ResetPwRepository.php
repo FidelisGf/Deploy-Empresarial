@@ -2,7 +2,6 @@
 
 namespace App\Repositories;
 
-use App\Http\interfaces\ResetPwInterface;
 use App\Http\Requests\StoreResetPwValidator;
 use App\Mail\SendMailPw;
 use App\ResetPw;
@@ -10,7 +9,7 @@ use App\Usuario;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Mail;
 use Illuminate\Support\Str;
-class ResetPwRepository implements ResetPwInterface
+class ResetPwRepository
 {
     public function __construct()
     {

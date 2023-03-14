@@ -3,7 +3,6 @@
 namespace App\Repositories;
 
 use App\Despesa;
-use App\Http\interfaces\VendaInterface;
 use App\Materiais;
 use App\Pedidos;
 use App\Product;
@@ -13,7 +12,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use Symfony\Component\VarDumper\Cloner\Data;
 
-class VendaRepository implements VendaInterface
+class VendaRepository
 {
     private $model;
     public function __construct(Venda $model)

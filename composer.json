@@ -27,12 +27,13 @@
         }
     ],
     "require": {
-        "php": "^7.3.0",
+        "php": "^7.4.33",
         "fideloper/proxy": "^4.2",
         "fruitcake/laravel-cors": "^1.0",
         "google/cloud": "^0.195.0",
         "guzzlehttp/guzzle": "^6.3",
         "josiasfonseca/megabit-laravel": "dev-main",
+        "laravel/envoy": "^2.8",
         "laravel/framework": "^7.0",
         "laravel/tinker": "^2.0",
         "laravel/ui": "2.4",

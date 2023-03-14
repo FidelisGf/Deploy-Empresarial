@@ -38,7 +38,7 @@ class TemaEmpresaRepository
             $tema_empresa = Tema_Empresa::where('ID_EMPRESA', $id)->first();
             if($request->has('CORES')){
                 $CORES = json_decode($request->CORES);
-                $CAMPOS = ['PRIMARIA', 'SECUNDARIA', 'NAVBAR', 'FILTROS', 'FOOTER'];
+                $CAMPOS = ['PRIMARIA', 'SECUNDARIA', 'NAVBAR', 'FILTROS', 'FOOTER', 'CARDS_PERFIL', 'CARD_PEDIDOS'];
                 if(empty($tema_empresa) || $tema_empresa == null){
                     $tema_empresa = new Tema_Empresa();
                 }

@@ -3,13 +3,12 @@
 namespace App\Repositories;
 
 use App\Historico_Penalidade;
-use App\Http\interfaces\PenalidadeInterface;
 use App\Http\Requests\StorePenalidadeValidator;
 use App\Penalidade;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 
-class PenalidadeRepository implements PenalidadeInterface
+class PenalidadeRepository
 {
     public function __construct()
     {

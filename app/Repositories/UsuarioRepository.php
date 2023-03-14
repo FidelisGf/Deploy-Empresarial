@@ -4,7 +4,6 @@ namespace App\Repositories;
 
 use App\Empresa;
 use App\Historico_Penalidade;
-use App\Http\interfaces\UsuarioInterface;
 use App\Http\Requests\RegisterEmployeeValidator;
 use App\Http\Requests\StoreEmpresaValidator;
 use App\Pagamento_Salario;
@@ -18,7 +17,7 @@ use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Hash;
 use Tymon\JWTAuth\Facades\JWTAuth;
 
-class UsuarioRepository implements UsuarioInterface
+class UsuarioRepository
 {
     public function __construct()
     {

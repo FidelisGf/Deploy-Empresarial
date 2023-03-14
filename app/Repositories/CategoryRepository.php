@@ -4,12 +4,11 @@ namespace App\Repositories;
 
 use App\Category;
 use App\Events\MakeLog;
-use App\Http\interfaces\CategoryInterface;
 use App\Http\Requests\StoreCategoryValidator;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class CategoryRepository implements CategoryInterface //Precisa de refatoração
+class CategoryRepository
 {
     private $model;
     public function __construct(Category $model)

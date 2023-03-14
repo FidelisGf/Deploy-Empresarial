@@ -5,13 +5,12 @@ namespace App\Repositories;
 use App\Estoque;
 use App\Events\MakeLog;
 use App\Http\Controllers\Help;
-use App\Http\interfaces\EstoqueInterface;
 use App\Http\Requests\StoreEstoqueValidator;
 use App\Product;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class EstoqueRepository implements EstoqueInterface
+class EstoqueRepository
 {
     public function __construct()
     {

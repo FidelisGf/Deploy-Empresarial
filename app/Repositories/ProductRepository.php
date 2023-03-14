@@ -9,7 +9,6 @@ use App\Empresa;
 use App\Estoque;
 use App\Events\MakeLog;
 use App\Http\Controllers\Help;
-use App\Http\interfaces\ProductInterface as InterfacesProductInterface;
 use App\Http\Requests\StoreProdutoValidator;
 use App\Http\Resources\ProductResource;
 use App\Materiais;
@@ -18,7 +17,7 @@ use App\Produtos_Materias;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class ProductRepository implements InterfacesProductInterface
+class ProductRepository
 {
 
     public function __construct()

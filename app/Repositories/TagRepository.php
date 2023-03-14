@@ -4,12 +4,11 @@ namespace App\Repositories;
 
 use App\Events\MakeLog;
 use App\Http\Controllers\Help;
-use App\Http\interfaces\TagInterface;
 use App\Http\Requests\StoreTagValidator;
 use App\Tag;
 use Illuminate\Http\Request;
 
-class TagRepository implements TagInterface
+class TagRepository
 {
     private $model;
     public function __construct(Tag $model)

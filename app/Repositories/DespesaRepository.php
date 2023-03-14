@@ -4,13 +4,12 @@ namespace App\Repositories;
 
 use App\Despesa;
 use App\Events\MakeLog;
-use App\Http\interfaces\DespesaInterface;
 use App\Http\Requests\StoreDespesaValidator;
 use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 
-class DespesaRepository implements DespesaInterface
+class DespesaRepository
 {
     public function __construct()
     {

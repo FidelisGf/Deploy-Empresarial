@@ -21,6 +21,7 @@ use App\Http\Controllers\Tema_EmpresaController;
 use App\Http\Controllers\UsuarioController;
 use App\Http\Controllers\VendaController;
 use App\Http\Middleware\FuncMiddleware;
+use App\Http\Middleware\CorsMiddleware;
 use App\Product;
 use App\Repositories\VendaRepository;
 use Illuminate\Http\Request;
@@ -63,7 +64,7 @@ Route::get('auth/validateTkn', [AuthController::class,
 
 
 
-Route::group(['middleware' => ['jwt.verify']], function() {
+Route::group(['middleware' => ['jwt.verify', 'cors']], function() {
 
 
     Route::get('refresh', [AuthController::class,
@@ -282,26 +283,26 @@ Route::group(['middleware' => ['jwt.verify']], function() {
 });
 
 Route::get('/getOneColorOfProduct/{id}', [ProductController::class,
-'getOneColorOfProduct']);
+'getOneColorOfProduct'])->middleware(CorsMiddleware::class);
 
 Route::resource('categorys',
-'CategoryController');
+'CategoryController')->middleware(CorsMiddleware::class);
 
 Route::resource('products',
 'ProductController')
-->except(['destroy']);
+->except(['destroy'])->middleware(CorsMiddleware::class);
 
 Route::get('getQuantidadeProduct/{id}', [EstoqueController::class,
-'getQuantidadeProduct']);
+'getQuantidadeProduct'])->middleware(CorsMiddleware::class);
 
 Route::get('produtosDestaques', [ProductController::class,
-'getProdutosDestaques']);
+'getProdutosDestaques'])->middleware(CorsMiddleware::class);
 
 Route::get('/getConfigSite', [EmpresaController::class,
-'getConfigSite']);
+'getConfigSite'])->middleware(CorsMiddleware::class);
 
 Route::get('/getEmpresaFromUser', [EmpresaController::class,
-'getEmpresaFromUser']);
+'getEmpresaFromUser'])->middleware(CorsMiddleware::class);
 
 Route::get('/getTema', [Tema_EmpresaController::class,
-'show']);
+'show'])->middleware(CorsMiddleware::class);
